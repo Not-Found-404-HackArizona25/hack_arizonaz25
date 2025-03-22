@@ -1,0 +1,18 @@
+services:
+  backend:
+    image: HACK/django
+    build: ./server
+    volumes:
+      - ./server:/app/server
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  frontend:
+    image: HACK/frontend
+    build: ./client
+    volumes:
+      - ./client:/app/server
+    ports:
+      - "127.0.0.1:5173:5173"
+    links:
+      - backend
