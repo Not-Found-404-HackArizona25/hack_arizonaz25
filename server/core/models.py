@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator
 from django.urls import reverse
+from django.utils import timezone
 
 
 # Custom User model that extends Django's AbstractUser
@@ -60,3 +61,60 @@ class User(AbstractUser):
             'display_name': self.display_name,
             'profile_picture': self.profile_picture,
         }
+        
+class Link(models.Model):
+    link = models.CharField(max_length=1000,null=True,blank=True)
+    
+class Tag(models.Model):
+    tag = models.CharField(max_length=1000,null=True,blank=True)
+    
+class Super(models.Model):
+    name = models.CharField(max_length=200, null=True, blank=True)
+    leader = models.ForeignKey(User, on_delete=models.CASCADE,related_name="super_leader", blank=True, null=True)
+    users = models.ManyToManyField(User,related_name="super_users", blank=True, null=True)
+    description = models.CharField(max_length=1000,null=True,blank=True)
+    links = models.ManyToManyField(Link)
+    tags = models.ManyToManyField(Tag)
+
+class Project(Super):
+    active = models.BooleanField(default=True)
+
+class Club(Super):
+    pass
+
+class Event(Super):
+    start_time = models.DateField(default=timezone.now)
+    end_time = models.DateField(default=timezone.now)
+    location = models.CharField(max_length=200, null=True, blank=True)
+    club_ref = models.ForeignKey(Club, blank=True, null=True, on_delete=models.CASCADE)
+    
+class Post(models.Model):
+    class PostType(models.TextChoices):
+        TEXT = 'text', 'text'
+        IMAGE = 'image', 'image'
+    
+    title = models.CharField(max_length=200, null=True, blank=True)
+    text = models.CharField(max_length=1000,null=True,blank=True)
+    image_url = models.CharField(max_length=1000,null=True,blank=True)
+    contentType  = models.CharField(
+        max_length=5,
+        choices=PostType.choices,
+        default=PostType.TEXT
+    )
+    tag = models.ForeignKey(Super,on_delete=models.CASCADE)
+    
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    time_stamp = models.DateField(default=timezone.now)
+
+class SuperUserData(models.Model):
+    class SuperType(models.TextChoices):
+        PROJECT = 'project', 'project'
+        EVENT = 'event', 'event'
+        CLUB = 'club', 'club'
+        SUPER = 'super', 'super'
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    super = models.ForeignKey(Super, on_delete=models.CASCADE)
+    type = models.CharField(max_length=7, choices=SuperType.choices, default=SuperType.SUPER)
+    
