@@ -27,7 +27,7 @@ export default function SearchActivities({ setActivities }: SearchProps) {
       })
       if (response.ok) {
         const json = await response.json()
-        setActivities(json.data.posts as Array<ProjectData|EventData|ClubData>)
+        setActivities(json.data.activities as Array<ProjectData|EventData|ClubData>)
       } else {
         // Handle the error state if needed
         console.error('Error fetching data:', response.statusText)
