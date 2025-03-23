@@ -152,7 +152,7 @@ class PostService:
             contentType = data.get('contentType', 'TEXT')
             text = image_url = None
             if contentType == 'TEXT':
-                text = data.get('text'),
+                text = data.get('text')
             if contentType == 'IMAGE':
                 image_url = data.get('image_url')
             try:
