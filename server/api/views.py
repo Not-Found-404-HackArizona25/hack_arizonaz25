@@ -246,32 +246,40 @@ class SuperView(APIView):
         search_term = request.query_params.get('search', '')
         type = request.query_params.get('type', '')
         
-        out = None
-        if type=='project':
-            projects = Project.objects.filter(
+        clubs = Club.objects.filter(
+
                 Q(name__icontains=search_term) |
                 Q(description__icontains=search_term) |
                 Q(tags__tag__icontains=search_term)
             ).distinct()
-            out = projects[:10]
-        elif type=='event':
-            events = Event.objects.filter(
-                Q(name__icontains=search_term) |
-                Q(description__icontains=search_term) |
-                Q(tags__tag__icontains=search_term)
-            ).distinct()
-            out = events[:10]
-        elif type=='club':
-                clubs = Club.objects.filter(
+
+        events = Event.objects.filter(
+
                     Q(name__icontains=search_term) |
                     Q(description__icontains=search_term) |
                     Q(tags__tag__icontains=search_term)
                 ).distinct()
-                out = clubs[:10]
+
+        projects = Project.objects.filter(
+                Q(name__icontains=search_term) |
+                Q(description__icontains=search_term) |
+                Q(tags__tag__icontains=search_term)
+            ).distinct()
+        
+        out = None
+        if type == 'project':
+            out = projects[:10]
+        elif type == 'event':
+                out = events[:10]
+        elif type == 'club':
+            out = clubs[:10]
+        else:
+            out = list(clubs[:10]) + list(projects[:10]) + list(events[:10])
+
                 
         return json_standard(
             message='Search Results',
-            data={(type+"s"): [super.to_dict() for super in out]},
+            data={("activities"): [super.to_dict() for super in out]},
             status=status.HTTP_200_OK,
         )
     

@@ -10,6 +10,7 @@ export default [
     index("routes/home.tsx"),
     route("login", "routes/login.tsx"),
     route("register", "routes/register.tsx"),
+    route('activities','routes/activities.tsx'),
     layout("protected.tsx", [
       route(':username','routes/userpage.tsx')
     ]),

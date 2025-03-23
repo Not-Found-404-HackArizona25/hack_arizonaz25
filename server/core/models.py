@@ -155,6 +155,7 @@ class Post(models.Model):
             'id': self.id,
             'title': self.title,
             'text': self.text,
+            'username': self.user.username,
             'image_url': self.image_url,
             'contentType': self.contentType,
             'comments': [comment.to_dict() for comment in self.comments.all()],
@@ -164,6 +165,11 @@ class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     time_stamp = models.DateField(default=timezone.now)
+    def to_dict(self):
+        return {
+            'user': self.user.id,
+            'post': self.post.id
+        }
 
 class SuperUserData(models.Model):
     class SuperType(models.TextChoices):
