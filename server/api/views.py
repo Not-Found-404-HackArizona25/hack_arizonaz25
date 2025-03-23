@@ -5,8 +5,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserLoginSerializer, UserRegistrationSerializer, UserUpdateSerializer, PostSerializer
-from core.services import UserService, PostService
+from core.services import UserService, SuperService, PostService
+from core.models import User
 from .utils import json_standard
+from django.db.models import Q
 
 class UserRegistrationView(generics.CreateAPIView):
     """
@@ -37,7 +39,34 @@ class UserRegistrationView(generics.CreateAPIView):
             data=user_data,
             status=status.HTTP_201_CREATED
         )
+    
+    def get(self, request, *args, **kwargs):
+        """
+        Handles a user search which returns the top 10 users based on the
+        search term (such as users with a similar name). Searches the username,
+        display_name, and email fields in a case insentitive way.
+        """
+from core.models import User
 
+def get(self, request, *args, **kwargs):
+    """
+    Handles a user search which returns the top 10 users based on the
+    search term (such as users with a similar name). Searches the username,
+    display_name, and email fields in a case insentitive way.
+    """
+    search_term = request.query_params.get('search', '')
+    users = User.objects.filter(
+        Q(username__icontains=search_term) |
+        Q(display_name__icontains=search_term)
+    ).distinct()
+    users = users[:10]
+            
+    return json_standard(
+        message='Search Results',
+        data={'users': [user.to_dict() for user in users]},
+        status=status.HTTP_200_OK,
+    )
+    
 class SessionView(APIView):
     """
     API endpoint for managing user sessions.
@@ -152,3 +181,72 @@ class PostView(APIView):
             status=status.HTTP_200_OK
         )
     
+class UserIDView(APIView):
+    permission_classes = [IsAuthenticated]  # Restrict to authenticated users
+
+    def get(self, request, user_id, *args, **kwargs):
+        """
+        Retrieve a user by their ID.
+        """
+        try:
+            user = User.objects.get(id=user_id)
+            return json_standard(
+                message="Retrieved User",
+                data={'user': user.to_dict()},
+                status=status.HTTP_200_OK
+            )
+        except User.DoesNotExist:
+            return json_standard(
+                message="User not found",
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except ValueError:
+            return json_standard(
+                message="Invalid user ID",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class SuperView(APIView):
+    """
+    Endpoint for making/editing a super object
+    
+    POST: Create a super object
+    PATCH: Update/edit a super object
+    
+    TODO: Validate post data
+    """
+    
+    def post(self, request):
+        user = request.user
+        data = request.data
+        created = None
+        match data['type']:
+            case 'project':
+                created = SuperService.create_project(user,data)
+            case 'event':
+                created = SuperService.create_event(user,data)
+            case 'club':
+                created = SuperService.create_club(user,data)
+                
+        return json_standard(
+            message='Successfully created Super',
+            data=created.to_dict(),
+            status=status.HTTP_200_OK
+        )
+    def patch(self,request):
+        user = request.user
+        data = request.data
+        created = None
+        match data['type']:
+            case 'project':
+                created = SuperService.edit_project(user,data)
+            case 'event':
+                created = SuperService.edit_event(user,data)
+            case 'club':
+                created = SuperService.edit_club(user,data)
+        return json_standard(
+            message='Successfully created Super',
+            data=created.to_dict(),
+            status=status.HTTP_200_OK
+        )
