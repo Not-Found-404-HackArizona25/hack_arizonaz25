@@ -62,9 +62,9 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
       )}
       <Tabs defaultValue="posts" className="w-[400px]">
         <TabsList>
-        <TabsTrigger value="posts">Posts</TabsTrigger>
-        <TabsTrigger value="supers">Activities</TabsTrigger>
-        <TabsTrigger value="likes">Likes</TabsTrigger>
+          <TabsTrigger value="posts">Posts</TabsTrigger>
+          <TabsTrigger value="supers">Activities</TabsTrigger>
+          <TabsTrigger value="likes">Likes</TabsTrigger>
         </TabsList>
         <TabsContent value="posts">
           <h2>Posts</h2>
@@ -101,10 +101,10 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
           )}
         </TabsContent>
         <TabsContent value="likes">
-        <h2>Likes</h2>
-          {postData.length > 0 ? (
+          <h2>Likes</h2>
+          {loaderData?.likeData?.length > 0 ? (
             <div className="posts-list">
-              {postData.map((post: any) => (
+              {loaderData.likeData.map((post: any) => (
                 <div key={post.id} className="post-card">
                   <p>{post.username}</p>
                   <h3>{post.title}</h3>
