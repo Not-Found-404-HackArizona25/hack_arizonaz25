@@ -1,6 +1,6 @@
 import { apiFetch } from "@/lib/utils"
 import { useState } from "react"
-import type { ProjectData, EventData, ClubData, PostData } from "@/lib/types"
+import type { PostData } from "@/lib/types"
 
 interface SearchProps {
     setPosts: React.Dispatch<React.SetStateAction<Array<PostData>>>;
@@ -42,7 +42,7 @@ export default function SearchPosts({ setPosts }: SearchProps) {
     <div>
       <form onSubmit={handleSubmit}>
         <input placeholder="What do you want to find?" name="search" className="border-1 border-black" />
-        <select title="Activity Type: " name="type" defaultValue="misc">
+        <select title="Post Type: " name="type" defaultValue="misc">
             <option value="project">Project</option>
             <option value="club">Club</option>
             <option value="event">Event</option>
