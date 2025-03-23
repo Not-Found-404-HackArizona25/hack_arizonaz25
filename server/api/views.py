@@ -150,12 +150,24 @@ class CurrentUserView(APIView):
     
 class PostView(APIView):
     """
-    API endpoint for retrieving multiple posts.
-    Supports optional filtering parameters via query strings.
+    API endpoint for retrieving/creating post(s).
+
+    GET: get multiple posts
+    Supports optional filtering parameters via query strings when searching.
     Example: /api/posts/?type=project&tag=web&offset=10
+    
+    POST: create a post
+    Endpoint: /api/posts (POST method)
+
     """
 
-    permission_classes = [AllowAny] # Allows anyone to register (no authentication required)
+    def get_permissions(self):
+        """
+        Only GET requests do not require authentication.
+        """
+        if self.request.method == 'GET':
+            return [AllowAny()] # Allows anyone to register (no authentication required)
+        return [IsAuthenticated()] 
     
     def get(self, request):
         """
@@ -171,6 +183,17 @@ class PostView(APIView):
         return json_standard(
             message="Get posts successful",
             data=posts_data,
+            status=status.HTTP_200_OK
+        )
+    
+    def post(self, request):
+        user = request.user
+        data = request.data
+        created = PostService.create_a_post(user, data)
+    
+        return json_standard(
+            message='Successfully created a post',
+            data=created.to_dict(),
             status=status.HTTP_200_OK
         )
     
@@ -225,7 +248,6 @@ class SuperIDView(APIView):
                 message="Invalid user ID",
                 status=status.HTTP_400_BAD_REQUEST
             )
-
 
 class SuperView(APIView):
     """
