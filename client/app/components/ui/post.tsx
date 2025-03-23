@@ -51,9 +51,21 @@ export default function Post({ post, className }: { post: PostData, className?: 
 
   return (
     <div className={cn(className,"mx-5 border-secondary bg-secondary max-w-[50ch] flex items-start gap-3 rounded-3xl border p-4 text-secondary-foreground")}>
-      <Link to={"/" + post.username}>
-        <img src={"/Amber-1705-cropped.jpg"} className="size-10 rounded-full" />
-      </Link>
+      <div
+        className={`flex min-w-10 min-h-10 items-center justify-center overflow-hidden rounded-full mt-4 ${
+          post.profile_picture
+            ? ""
+            : "border-muted-foreground border-1 border-solid"
+        }`}
+      >
+        {post.profile_picture ? (
+          <img src={post.profile_picture} className="object-cover size-10" />
+        ) : (
+          <p className="text-secondary-foreground text-base font-light">
+            {(post.display_name || "   ").substring(0, 2).toUpperCase()}
+          </p>
+        )}
+      </div>
       <div className="flex w-full flex-col">
         <Link to={"/" + post.username}>
           <div className="flex w-full items-end gap-2">

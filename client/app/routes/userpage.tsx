@@ -81,8 +81,8 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
           <TabsTrigger value="supers">Activities</TabsTrigger>
           <TabsTrigger value="likes">Likes</TabsTrigger>
         </TabsList>
-        <TabsContent value="posts">
-          <h2>Posts</h2>
+        <TabsContent value="posts" className=" mb-18 ">
+          <h2 className="text-2xl mb-4">Posts</h2>
           {postData.length > 0 ? (
             <div className="posts-list flex flex-col gap-5">
               {postData.map((post: PostData) => (
@@ -93,10 +93,10 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
             <p>No posts yet.</p>
           )}
         </TabsContent>
-        <TabsContent value="supers">
-          <h2>Activities</h2>
+        <TabsContent value="supers" className=" mb-18 ">
+          <h2 className="text-2xl mb-4">Activities</h2>
           {superData.length > 0 ? (
-            <div className="posts-list">
+            <div className="posts-list flex flex-col gap-5">
               {superData.map((superItem: SuperData) => (
                 <div
                   key={superItem.id}
@@ -108,19 +108,15 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
               ))}
             </div>
           ) : (
-            <p>No supers yet.</p>
+            <p>No activities yet.</p>
           )}
         </TabsContent>
-        <TabsContent value="likes">
-          <h2>Likes</h2>
+        <TabsContent value="likes" className=" mb-18 ">
+          <h2 className="text-2xl mb-4">Likes</h2>
           {likeData.length > 0 ? (
-            <div className="posts-list">
+            <div className="posts-list flex flex-col gap-5">
               {likeData.map((post: PostData) => (
-                <div key={post.id} className="post-card">
-                  <p>{post.username}</p>
-                  <h3>{post.title}</h3>
-                  <p>{post.text}</p>
-                </div>
+                <Post post={post}/>
               ))}
             </div>
           ) : (

@@ -439,9 +439,12 @@ class LikesUNameGet(APIView):
     def get(self, request, **kwargs):
         [username] = kwargs.values()
         likes = Like.objects.filter(user__username=username)
+        posts = []
+        for like in likes:
+            posts.append(like.post)
         return json_standard(
-            message='Successfully created Super',
-            data=[user.to_dict() for user in likes],
+            message='Likes',
+            data=[user.to_dict() for user in posts],
             status=status.HTTP_200_OK
         )
 

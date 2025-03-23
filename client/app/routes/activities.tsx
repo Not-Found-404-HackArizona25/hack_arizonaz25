@@ -7,7 +7,7 @@ export default function Activities() {
   const [activities, setActivities] = useState<Array<ProjectData|EventData|ClubData>>([])
 
   return (
-    <div>
+    <div className="text-secondary-foreground">
       <SearchActivities setActivities={setActivities}/>
       <div>
         { activities.length > 0 ? (

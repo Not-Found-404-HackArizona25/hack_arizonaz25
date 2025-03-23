@@ -27,10 +27,10 @@ export default function Header() {
         {windowDimensions.width > 1024 ? (
           <ul className="ml-auto flex list-none items-center gap-6 font-medium *:hover:underline">
             <li>
-              <Link to={"/dashboard"}>Dashboard</Link>
+              <Link to={"/"}>Feed</Link>
             </li>
             <li>
-              <Link to={"/lessons"}>Lessons</Link>
+              <Link to={"/"+user?.username}>Account</Link>
             </li>
             <li>
               <Link to={"/activities"}>Activities</Link>
