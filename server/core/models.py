@@ -75,7 +75,7 @@ class Tag(models.Model):
 class Super(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
     leader = models.ForeignKey(User, on_delete=models.CASCADE,related_name="super_leader", blank=True, null=True)
-    followers = models.ManyToManyField(User,related_name="super_users")
+    followers = models.ManyToManyField(User,related_name="super_users", blank=True, null=True)
     description = models.CharField(max_length=1000,null=True,blank=True)
     links = models.ManyToManyField(Link)
     tags = models.ManyToManyField(Tag)
