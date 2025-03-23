@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserLoginSerializer, UserRegistrationSerializer, UserUpdateSerializer
-from core.services import UserService
+from core.services import UserService, SuperService
 from .utils import json_standard
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -124,3 +124,48 @@ class CurrentUserView(APIView):
             data=serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+class SuperView(APIView):
+    """
+    Endpoint for making/editing a super object
+    
+    POST: Create a super object
+    PATCH: Update/edit a super object
+    
+    TODO: Validate post data
+    """
+    
+    def post(self, request):
+        user = request.user
+        data = request.data
+        created = None
+        match data['type']:
+            case 'project':
+                created = SuperService.create_project(user,data)
+            case 'event':
+                created = SuperService.create_event(user,data)
+            case 'club':
+                created = SuperService.create_club(user,data)
+                
+        return json_standard(
+            message='Successfully created Super',
+            data=created.to_dict(),
+            status=status.HTTP_200_OK
+        )
+    def patch(self,request):
+        user = request.user
+        data = request.data
+        created = None
+        match data['type']:
+            case 'project':
+                created = SuperService.edit_project(user,data)
+            case 'event':
+                created = SuperService.edit_event(user,data)
+            case 'club':
+                created = SuperService.edit_club(user,data)
+        return json_standard(
+            message='Successfully created Super',
+            data=created.to_dict(),
+            status=status.HTTP_200_OK
+        )
+        
