@@ -1,17 +1,10 @@
 import { apiFetch } from "@/lib/utils";
 import type { Route } from "./+types/userpage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { User } from "@/lib/userSlice";
+import type { LikeData, PostData, SuperData } from "@/lib/types";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  await apiFetch(`/super`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      type: "project",
-      name: "blah blahhhhhhhhhhhhh",
-      description: "boring",
-    }),
-  });
   const user = await apiFetch(`/users/${params.username}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
@@ -32,13 +25,17 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   });
 
   if (user.ok && likes.ok && posts.ok && supers.ok) {
-    const [userData, likeData, postData, superData] = [
+    const [userData, likeData, postData, superData]: [
+      { data: User },
+      { data: PostData[] },
+      { data: PostData[] },
+      { data: SuperData[] },
+    ] = [
       await user.json(),
       await likes.json(),
       await posts.json(),
       await supers.json(),
     ];
-
     return {
       userData: userData.data,
       likeData: likeData.data,
@@ -50,9 +47,10 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
 export default function UserPage({ loaderData }: Route.ComponentProps) {
   // Add null checks with optional chaining and default empty arrays
-  const userData = loaderData?.userData || {};
-  const postData = loaderData?.postData || [];
-  const superData = loaderData?.superData || [];
+  const userData = loaderData?.userData || {} as User;
+  const postData = loaderData?.postData || [] as PostData[];
+  const superData = loaderData?.superData || [] as SuperData[];
+  const likeData = loaderData?.likeData || [] as PostData[];
 
   return (
     <div>
@@ -70,7 +68,7 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
           <h2>Posts</h2>
           {postData.length > 0 ? (
             <div className="posts-list">
-              {postData.map((post: any) => (
+              {postData.map((post: PostData) => (
                 <div key={post.id} className="post-card">
                   <p>{post.username}</p>
                   <h3>{post.title}</h3>
@@ -86,7 +84,7 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
           <h2>Activities</h2>
           {superData.length > 0 ? (
             <div className="posts-list">
-              {superData.map((superItem: any) => (
+              {superData.map((superItem: SuperData) => (
                 <div
                   key={superItem.id}
                   className="post-card rounded-4xl border-2 border-green-400"
@@ -102,9 +100,9 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
         </TabsContent>
         <TabsContent value="likes">
           <h2>Likes</h2>
-          {loaderData?.likeData?.length > 0 ? (
+          {likeData.length > 0 ? (
             <div className="posts-list">
-              {loaderData.likeData.map((post: any) => (
+              {likeData.map((post: PostData) => (
                 <div key={post.id} className="post-card">
                   <p>{post.username}</p>
                   <h3>{post.title}</h3>

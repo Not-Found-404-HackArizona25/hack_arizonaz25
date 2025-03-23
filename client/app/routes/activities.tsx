@@ -1,8 +1,9 @@
 import { apiFetch } from "@/lib/utils"
 import { useState } from "react"
+import type { ProjectData, EventData, ClubData } from "@/lib/types"
 
 export default function Activities() {
-  const [activities, setActivities] = useState<Array<any>>([])
+  const [activities, setActivities] = useState<Array<ProjectData|EventData|ClubData>>([])
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -18,7 +19,7 @@ export default function Activities() {
       })
       if (response.ok) {
         const json = await response.json()
-        setActivities(json.data.activities as Array<any>)
+        setActivities(json.data.activities as Array<ProjectData|EventData|ClubData>)
       } else {
         // Handle the error state if needed
         console.error('Error fetching data:', response.statusText)
@@ -35,7 +36,7 @@ export default function Activities() {
         <button>Search</button>
       </form>
       <div>
-        {activities.map((activity: any) => (
+        {activities.map((activity: ProjectData|EventData|ClubData) => (
           <p key={activity.id}>{activity.name}</p>
         ))}
       </div>
