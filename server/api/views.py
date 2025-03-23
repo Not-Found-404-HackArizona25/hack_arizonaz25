@@ -180,10 +180,15 @@ class PostView(APIView):
         """
         posts_data = PostService.get_multiple_posts(request)
 
+        if posts_data:
+            return json_standard(
+                message="Get posts successful",
+                data=posts_data,
+                status=status.HTTP_200_OK
+            )
         return json_standard(
-            message="Get posts successful",
-            data=posts_data,
-            status=status.HTTP_200_OK
+            message="No posts found",
+            status=status.HTTP_404_NOT_FOUND,
         )
     
     def post(self, request):

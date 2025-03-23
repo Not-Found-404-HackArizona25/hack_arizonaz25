@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from .models import Super, User, Project, Link, Tag, Event, Club, Post
 from datetime import datetime
 from django.utils import timezone
+from django.db.models import Q
 
 class UserService:
     @staticmethod
@@ -102,7 +103,7 @@ class PostService:
             dict: Posts data
         """
         try:
-            title: str = request.query_params.get("title", "")
+            search: str = request.query_params.get("search", "")
             tag_list: List[str] = request.query_params.getlist("tag", [])
             type: str = request.query_params.get("type", "")
             offset: int = int(request.query_params.get('offset', 0))
@@ -110,8 +111,8 @@ class PostService:
 
             querySet = Post.objects.all()
 
-            if title:
-                querySet = querySet.filter(title__icontains=title)
+            if search:
+                querySet = querySet.filter(Q(title__icontains=search) | Q(text__icontains=search))
             
             if tag_list:
                 # Match all queries with at least one matching tag
@@ -129,7 +130,7 @@ class PostService:
             if type == "misc":
                 querySet = querySet.filter(misc__isnull=False)
             
-            # if no posts fit the filter, return all posts
+            # if no posts fit the filter, return None
             results = None if querySet is None else querySet[offset: offset+limit]
             return {
                 'posts': [post.to_dict() for post in results] if results else [],
