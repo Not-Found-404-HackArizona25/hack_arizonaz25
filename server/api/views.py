@@ -173,7 +173,6 @@ class PostView(APIView):
             ValidationError: If the registration data is invalid
         """
         posts_data = PostService.get_multiple_posts(request)
-        print(f'yoy: {posts_data}')
 
         return json_standard(
             message="Get posts successful",

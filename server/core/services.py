@@ -135,6 +135,7 @@ class PostService:
             
         except KeyError as e:
             raise ValidationError(f'Missing required field: {str(e)}')
+        
 class SuperService:
     def create_project(user: User, data: dict):
         # Create a Project instance using the provided data.
