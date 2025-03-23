@@ -196,7 +196,35 @@ class PostView(APIView):
             data=created.to_dict(),
             status=status.HTTP_200_OK
         )
-    
+
+class PostIDView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, **kwargs):
+        """
+        Retrieve a post by ID.
+        """
+        [post_id] = kwargs.values()
+        try:
+            post = Post.objects.get(id=post_id)
+            return json_standard(
+                message="Retrieved Post",
+                data={'post': post.to_dict()},
+                status=status.HTTP_200_OK
+            )
+
+        except User.DoesNotExist:
+            return json_standard(
+                message="Post not found",
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        except ValueError:
+            return json_standard(
+                message="Invalid user ID",
+                status=status.HTTP_400_BAD_REQUEST
+            ) 
+
 class UserIDView(APIView):
     permission_classes = [IsAuthenticated]  # Restrict to authenticated users
 
