@@ -213,7 +213,7 @@ class PostIDView(APIView):
                 status=status.HTTP_200_OK
             )
 
-        except User.DoesNotExist:
+        except Post.DoesNotExist:
             return json_standard(
                 message="Post not found",
                 status=status.HTTP_404_NOT_FOUND
@@ -221,10 +221,9 @@ class PostIDView(APIView):
         
         except ValueError:
             return json_standard(
-                message="Invalid user ID",
+                message="Invalid post ID",
                 status=status.HTTP_400_BAD_REQUEST
             ) 
-
 class UserIDView(APIView):
     permission_classes = [IsAuthenticated]  # Restrict to authenticated users
 
