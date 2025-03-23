@@ -285,6 +285,7 @@ class SuperView(APIView):
     """
     Endpoint for making/editing a super object
     
+    GET: Search for super objects
     POST: Create a super object
     PATCH: Update/edit a super object
     
@@ -324,7 +325,7 @@ class SuperView(APIView):
         if type == 'project':
             out = projects[:10]
         elif type == 'event':
-                out = events[:10]
+            out = events[:10]
         elif type == 'club':
             out = clubs[:10]
         else:
