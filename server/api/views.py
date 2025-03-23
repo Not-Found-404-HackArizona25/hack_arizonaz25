@@ -247,22 +247,21 @@ class SuperView(APIView):
         type = request.query_params.get('type', '')
         
         out = None
-        match type:
-            case 'project':
-                projects = Project.objects.filter(
-                    Q(name__icontains=search_term) |
-                    Q(description__icontains=search_term) |
-                    Q(tags__tag__icontains=search_term)
-                ).distinct()
-                out = projects[:10]
-            case 'event':
-                events = Event.objects.filter(
-                    Q(name__icontains=search_term) |
-                    Q(description__icontains=search_term) |
-                    Q(tags__tag__icontains=search_term)
-                ).distinct()
-                out = events[:10]
-            case 'club':
+        if type=='project':
+            projects = Project.objects.filter(
+                Q(name__icontains=search_term) |
+                Q(description__icontains=search_term) |
+                Q(tags__tag__icontains=search_term)
+            ).distinct()
+            out = projects[:10]
+        elif type=='event':
+            events = Event.objects.filter(
+                Q(name__icontains=search_term) |
+                Q(description__icontains=search_term) |
+                Q(tags__tag__icontains=search_term)
+            ).distinct()
+            out = events[:10]
+        elif type=='club':
                 clubs = Club.objects.filter(
                     Q(name__icontains=search_term) |
                     Q(description__icontains=search_term) |
@@ -280,13 +279,12 @@ class SuperView(APIView):
         user = request.user
         data = request.data
         created = None
-        match data['type']:
-            case 'project':
-                created = SuperService.create_project(user,data)
-            case 'event':
-                created = SuperService.create_event(user,data)
-            case 'club':
-                created = SuperService.create_club(user,data)
+        if data['type'] == 'project':
+            created = SuperService.create_project(user,data)
+        elif data['type'] == 'event':
+            created = SuperService.create_event(user,data)
+        elif data['type'] == 'club':
+            created = SuperService.create_club(user,data)
                 
         return json_standard(
             message='Successfully created Super',
@@ -297,13 +295,12 @@ class SuperView(APIView):
         user = request.user
         data = request.data
         created = None
-        match data['type']:
-            case 'project':
-                created = SuperService.edit_project(user,data)
-            case 'event':
-                created = SuperService.edit_event(user,data)
-            case 'club':
-                created = SuperService.edit_club(user,data)
+        if data['type'] == 'project':
+            created = SuperService.edit_project(user,data)
+        elif data['type'] == 'event':
+            created = SuperService.edit_event(user,data)
+        elif data['type'] == 'club':
+            created = SuperService.edit_club(user,data)
         return json_standard(
             message='Successfully created Super',
             data=created.to_dict(),
