@@ -105,7 +105,11 @@ class Post(models.Model):
         choices=PostType.choices,
         default=PostType.TEXT
     )
-    tag = models.ForeignKey(Super,on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    misc = models.ForeignKey(Super, on_delete=models.CASCADE)
+    tag = models.ManyToManyField(Tag)
     comments = models.ManyToManyField(Comment)
     
 class Like(models.Model):
