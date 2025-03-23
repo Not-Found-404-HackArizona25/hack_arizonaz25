@@ -5,8 +5,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserLoginSerializer, UserRegistrationSerializer, UserUpdateSerializer
+
 from core.services import UserService, SuperService, PostService
-from core.models import User, Super
+from core.models import User, Super, Project, Event, Club
 from .utils import json_standard
 from django.db.models import Q
 
@@ -235,6 +236,45 @@ class SuperView(APIView):
     
     TODO: Validate post data
     """
+    
+    def get(self, request, *args, **kwargs):
+        """
+        Handles a user search which returns the top 10 users based on the
+        search term (such as users with a similar name). Searches the username,
+        display_name, and email fields in a case insentitive way.
+        """
+        search_term = request.query_params.get('search', '')
+        type = request.query_params.get('type', '')
+        
+        out = None
+        match type:
+            case 'project':
+                projects = Project.objects.filter(
+                    Q(name__icontains=search_term) |
+                    Q(description__icontains=search_term) |
+                    Q(tags__tag__icontains=search_term)
+                ).distinct()
+                out = projects[:10]
+            case 'event':
+                events = Event.objects.filter(
+                    Q(name__icontains=search_term) |
+                    Q(description__icontains=search_term) |
+                    Q(tags__tag__icontains=search_term)
+                ).distinct()
+                out = events[:10]
+            case 'club':
+                clubs = Club.objects.filter(
+                    Q(name__icontains=search_term) |
+                    Q(description__icontains=search_term) |
+                    Q(tags__tag__icontains=search_term)
+                ).distinct()
+                out = clubs[:10]
+                
+        return json_standard(
+            message='Search Results',
+            data={(type+"s"): [super.to_dict() for super in out]},
+            status=status.HTTP_200_OK,
+        )
     
     def post(self, request):
         user = request.user
