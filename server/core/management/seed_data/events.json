@@ -1,0 +1,52 @@
+[
+    {
+        "name": "Tech Conference 2025",
+        "description": "A conference showcasing the latest tech innovations.",
+        "start_time": "2025-05-01",
+        "end_time": "2025-05-03",
+        "location": "San Francisco, CA",
+        "club_ref": null,
+        "links": ["https://tech-conference.com"],
+        "tags": ["conference", "technology"]
+    },
+    {
+        "name": "AI Symposium 2025",
+        "description": "Symposium focusing on AI breakthroughs.",
+        "start_time": "2025-06-15",
+        "end_time": "2025-06-16",
+        "location": "New York, NY",
+        "club_ref": null,
+        "links": ["https://ai-symposium.com"],
+        "tags": ["AI", "symposium"]
+    },
+    {
+        "name": "Sustainability Workshop",
+        "description": "Workshop on sustainable practices in business.",
+        "start_time": "2025-07-20",
+        "end_time": "2025-07-21",
+        "location": "Los Angeles, CA",
+        "club_ref": null,
+        "links": ["https://sustainability-workshop.com"],
+        "tags": ["sustainability", "workshop"]
+    },
+    {
+        "name": "Startup Pitch Night",
+        "description": "Pitch event for new startups.",
+        "start_time": "2025-08-10",
+        "end_time": "2025-08-10",
+        "location": "San Francisco, CA",
+        "club_ref": null,
+        "links": ["https://startup-pitch-night.com"],
+        "tags": ["startup", "pitch"]
+    },
+    {
+        "name": "Medical Research Forum",
+        "description": "Forum for advancements in medical research.",
+        "start_time": "2025-09-05",
+        "end_time": "2025-09-06",
+        "location": "Chicago, IL",
+        "club_ref": null,
+        "links": ["https://medical-research-forum.com"],
+        "tags": ["medical", "research"]
+    }
+]

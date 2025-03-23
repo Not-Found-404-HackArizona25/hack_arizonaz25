@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserLoginSerializer, UserRegistrationSerializer, UserUpdateSerializer
 from core.services import UserService, SuperService, PostService
-from core.models import User
+from core.models import User, Super
 from .utils import json_standard
 from django.db.models import Q
 
@@ -39,33 +39,26 @@ class UserRegistrationView(generics.CreateAPIView):
             data=user_data,
             status=status.HTTP_201_CREATED
         )
-    
+        
     def get(self, request, *args, **kwargs):
         """
         Handles a user search which returns the top 10 users based on the
         search term (such as users with a similar name). Searches the username,
         display_name, and email fields in a case insentitive way.
         """
-from core.models import User
+        
+        search_term = request.query_params.get('search', '')
+        users = User.objects.filter(
+            Q(username__icontains=search_term) |
+            Q(display_name__icontains=search_term)
+        ).distinct()
+        users = users[:10]
 
-def get(self, request, *args, **kwargs):
-    """
-    Handles a user search which returns the top 10 users based on the
-    search term (such as users with a similar name). Searches the username,
-    display_name, and email fields in a case insentitive way.
-    """
-    search_term = request.query_params.get('search', '')
-    users = User.objects.filter(
-        Q(username__icontains=search_term) |
-        Q(display_name__icontains=search_term)
-    ).distinct()
-    users = users[:10]
-            
-    return json_standard(
-        message='Search Results',
-        data={'users': [user.to_dict() for user in users]},
-        status=status.HTTP_200_OK,
-    )
+        return json_standard(
+            message='Search Results',
+            data={'users': [user.to_dict() for user in users]},
+            status=status.HTTP_200_OK,
+        )
     
 class SessionView(APIView):
     """
@@ -183,10 +176,11 @@ class PostView(APIView):
 class UserIDView(APIView):
     permission_classes = [IsAuthenticated]  # Restrict to authenticated users
 
-    def get(self, request, user_id, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         """
         Retrieve a user by their ID.
         """
+        [user_id] = kwargs.values()
         try:
             user = User.objects.get(id=user_id)
             return json_standard(
@@ -197,6 +191,32 @@ class UserIDView(APIView):
         except User.DoesNotExist:
             return json_standard(
                 message="User not found",
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except ValueError:
+            return json_standard(
+                message="Invalid user ID",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+class SuperIDView(APIView):
+    permission_classes = [IsAuthenticated]  # Restrict to authenticated users
+
+    def get(self, request, *args, **kwargs):
+        """
+        Retrieve a user by their ID.
+        """
+        [super_id] = kwargs.values()
+        try:
+            super = Super.objects.get(id=super_id)
+            return json_standard(
+                message="Retrieved User",
+                data={'super': super.to_dict()},
+                status=status.HTTP_200_OK
+            )
+        except Super.DoesNotExist:
+            return json_standard(
+                message="Super not found",
                 status=status.HTTP_404_NOT_FOUND
             )
         except ValueError:

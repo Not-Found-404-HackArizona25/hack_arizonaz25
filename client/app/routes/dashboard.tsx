@@ -14,15 +14,9 @@ export async function clientLoader({}: Route.ClientLoaderArgs) {
   })
   const test = await response1.json();
   console.log(test.data)
-  const response = await apiFetch("/super", {
-      method: "PATCH",
+  const response = await apiFetch("/super/43", {
+      method: "GET",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: test.data.id,
-        name: 'HackPath EDITED',
-        description: "A better way forwrard",
-        type: 'club'
-      })
     });
     if (response.ok){
       const json = await response.json();
