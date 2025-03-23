@@ -7,7 +7,7 @@ from rest_framework import status
 from .serializers import UserLoginSerializer, UserRegistrationSerializer, UserUpdateSerializer
 
 from core.services import UserService, SuperService, PostService
-from core.models import User, Super, Project, Event, Club, Like, Post
+from core.models import User, Super, Project, Event, Club, Like, Post, Comment
 from .utils import json_standard
 from django.db.models import Q
 
@@ -374,6 +374,34 @@ class UserUNameGet(APIView):
             status=status.HTTP_200_OK
         )
 
+class LikeView(APIView):
+    def post(self, request):
+        data = request.data
+        user = request.user
+        post = Post.objects.get(id=data.get('post'))
+        Like.objects.create(post=post,user=user)
+        return json_standard(
+            message="Successfully liked post",
+            status=status.HTTP_200_OK
+        )
+    
+    def delete(self, request):
+        data = request.data
+        user = request.user
+        like = Like.objects.get(post__id=data.get('post'),user=user)
+        like.delete()
+        return json_standard(
+            message="Successfully liked post",
+            status=status.HTTP_200_OK
+        )
+
+class CommentView(APIView):
+    def post(self, request):
+        data = request.data
+        user = request.user
+        post = Post.objects.get(id=data.get('post'))
+        Comment.objects.create(post=post)
+
 class LikesUNameGet(APIView):
     def get(self, request, **kwargs):
         [username] = kwargs.values()
@@ -387,10 +415,18 @@ class LikesUNameGet(APIView):
 class PostsUNameGet(APIView):
     def get(self, request, **kwargs):
         [username] = kwargs.values()
-        posts = Post.objects.filter(user__username=username)
+        results = Post.objects.filter(user__username=username)
+        posts = []
+        for post in results:
+            post_dict = post.to_dict()
+            # Check if the request has a user and if that user is authenticated
+            if request.user.is_authenticated:
+                # Add the "liked" field based on whether a Like exists for this post and user
+                post_dict["liked"] = Like.objects.filter(post=post, user=request.user).exists()
+            posts.append(post_dict)
         return json_standard(
             message='Successfully created Super',
-            data=[user.to_dict() for user in posts],
+            data=posts,
             status=status.HTTP_200_OK
         )
 

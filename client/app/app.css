@@ -7,6 +7,8 @@
 
   --animate-slide-in-to-right: slide-in-from-right 0.4s ease-in-out;
   --animate-slide-out-to-right: slide-out-to-right 0.4s ease-in-out;
+  --animate-slide-in-to-left: slide-in-from-left 0.4s ease-in-out;
+  --animate-slide-out-to-left: slide-out-to-left 0.4s ease-in-out;
   --animate-in: fade-in 0.4s ease-in-out;
   --animate-out: fade-out 0.4s ease-in-out;
   --animate-slide-up: slideUp 0.3s ease-in;
@@ -33,19 +35,7 @@
   --color-secondary-border: var(--secondary-border);
 
   /* Dynamic Text Sizes */
-  --text-xs: var(--txt-xs);
-  --text-sm: var(--txt-sm);
-  --text-base: var(--txt-base);
-  --text-lg: var(--txt-lg);
-  --text-xl: var(--txt-xl);
-  --text-2xl: var(--txt-2xl);
-  --text-3xl: var(--txt-3xl);
-  --text-4xl: var(--txt-4xl);
-  --text-5xl: var(--txt-5xl);
-  --text-6xl: var(--txt-6xl);
-  --text-7xl: var(--txt-7xl);
-  --text-8xl: var(--txt-8xl);
-  --text-9xl: var(--txt-9xl);
+
 
   @keyframes slide-out-to-right {
     from {
@@ -320,6 +310,20 @@ button {
 
     --error: var(--color-black);
     --error-border: var(--color-fuchsia-500);
+
+    --txt-xs: 0.75rem;
+    --txt-sm: 0.875rem;
+    --txt-base: 1rem;
+    --txt-lg: 1.125rem;
+    --txt-xl: 1.25rem;
+    --txt-2xl: 1.5rem;
+    --txt-3xl: 1.875rem;
+    --txt-4xl: 2.25rem;
+    --txt-5xl: 3rem;
+    --txt-6xl: 3.75rem;
+    --txt-7xl: 4.5rem;
+    --txt-8xl: 6rem;
+    --txt-9xl: 8rem;
   }
 
   .txt-sm {

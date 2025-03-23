@@ -3,6 +3,7 @@ import type { Route } from "./+types/userpage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { User } from "@/lib/userSlice";
 import type { LikeData, PostData, SuperData } from "@/lib/types";
+import Post from "@/components/ui/post";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const user = await apiFetch(`/users/${params.username}`, {
@@ -36,6 +37,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
       await posts.json(),
       await supers.json(),
     ];
+    console.log(postData.data)
     return {
       userData: userData.data,
       likeData: likeData.data,
@@ -53,13 +55,13 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
   const likeData = loaderData?.likeData || [] as PostData[];
 
   return (
-    <div>
-      <h1>{userData.display_name || userData.username}</h1>
+    <div className="flex flex-col items-center">
+      <h1 className="text-4xl">{userData.display_name || userData.username}</h1>
       {userData.profile_picture && (
         <img src={userData.profile_picture} alt="Profile" />
       )}
-      <Tabs defaultValue="posts" className="w-[400px]">
-        <TabsList>
+      <Tabs defaultValue="posts" className="w-[400px] text-secondary-foreground flex flex-col items-center">
+        <TabsList className="w-80 flex justify-evenly **:w-full">
           <TabsTrigger value="posts">Posts</TabsTrigger>
           <TabsTrigger value="supers">Activities</TabsTrigger>
           <TabsTrigger value="likes">Likes</TabsTrigger>
@@ -69,11 +71,7 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
           {postData.length > 0 ? (
             <div className="posts-list">
               {postData.map((post: PostData) => (
-                <div key={post.id} className="post-card">
-                  <p>{post.username}</p>
-                  <h3>{post.title}</h3>
-                  <p>{post.text}</p>
-                </div>
+                <Post post={post}/>
               ))}
             </div>
           ) : (

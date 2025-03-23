@@ -47,9 +47,25 @@ export interface PostData {
   id: number;
   title: string | null;
   text: string | null;
+  display_name: string;
   username: string;
+  profile_picture: string|null;
   image_url: string | null;
   contentType: ContentType;
+  project?: {
+    id: number,
+    name: string,
+  }
+  event?: {
+    id: number,
+    name: string,
+  }
+  club?: {
+    id: number,
+    name: string,
+  }
+  like_number: number,
+  liked?: boolean,
   comments: CommentData[];
 }
 
