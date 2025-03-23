@@ -45,11 +45,19 @@ class UserRegistrationView(generics.CreateAPIView):
         search term (such as users with a similar name). Searches the username,
         display_name, and email fields in a case insentitive way.
         """
-        data = request.data
-        users = User.objects.filter(
-            Q(username__icontains=data.get('search', '')) |
-            Q(display_name__icontains=data.get('search', ''))
-        ).distinct()
+from core.models import User
+
+def get(self, request, *args, **kwargs):
+    """
+    Handles a user search which returns the top 10 users based on the
+    search term (such as users with a similar name). Searches the username,
+    display_name, and email fields in a case insentitive way.
+    """
+    search_term = request.query_params.get('search', '')
+    users = User.objects.filter(
+        Q(username__icontains=search_term) |
+        Q(display_name__icontains=search_term)
+    ).distinct()
             
         users = users[:10]
             
