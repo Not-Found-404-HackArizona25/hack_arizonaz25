@@ -82,6 +82,7 @@ class Super(models.Model):
     
     def to_dict(self):
         return {
+            'id': self.id,
             'name': self.name,
             'leader': self.leader.id if self.leader else None,
             'followers': [user.id for user in self.followers.all()],
@@ -126,7 +127,7 @@ class Comment(models.Model):
     text = models.CharField(max_length=200, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     def to_dict(self):
-        return {'text': self.text, 'user': self.user.id}
+        return {'id': self.id, 'text': self.text, 'user': self.user.id}
     
 class Post(models.Model):
     class PostType(models.TextChoices):
@@ -146,6 +147,7 @@ class Post(models.Model):
     
     def to_dict(self):
         return {
+            'id': self.id,
             'title': self.title,
             'text': self.text,
             'image_url': self.image_url,

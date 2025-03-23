@@ -177,3 +177,43 @@ class SuperService:
         
         except ValidationError as e:
                 raise ValidationError({'project': e.messages})
+
+    def edit_project(user: User, data: dict):
+            # Create a Project instance using the provided data.
+            # We assume `data` contains "name" and "description".
+            try:
+                project = Project.objects.get(id=data.get("id"))
+                project = data.get('name',project.name)
+                project = data.get('description',project.description)
+                project = data.get('active',project.active)
+                project.save()
+                return project
+
+            except ValidationError as e:
+                    raise ValidationError({'project': e.messages})
+
+    def edit_event(user: User, data: dict):
+        # Create a Project instance using the provided data.
+        # We assume `data` contains "name" and "description".
+        try:
+            event = Event.objects.get(id=data.get("id"))
+            event = data.get('name',event.name)
+            event = data.get('description',event.description)
+            event.save()
+            return event
+        
+        except ValidationError as e:
+                raise ValidationError({'project': e.messages})
+            
+    def edit_club(user: User, data: dict):
+        try:
+            club = Club.objects.get(id=data.get("id"))
+            club.name = data.get('name', club.name)
+            club.description = data.get('description', club.description)
+            club.save()
+            return club
+        
+        except ValidationError as e:
+                raise ValidationError({'project': e.messages})
+            
+    

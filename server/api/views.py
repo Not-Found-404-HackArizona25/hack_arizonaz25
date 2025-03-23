@@ -152,5 +152,20 @@ class SuperView(APIView):
             data=created.to_dict(),
             status=status.HTTP_200_OK
         )
-            
+    def patch(self,request):
+        user = request.user
+        data = request.data
+        created = None
+        match data['type']:
+            case 'project':
+                created = SuperService.edit_project(user,data)
+            case 'event':
+                created = SuperService.edit_event(user,data)
+            case 'club':
+                created = SuperService.edit_club(user,data)
+        return json_standard(
+            message='Successfully created Super',
+            data=created.to_dict(),
+            status=status.HTTP_200_OK
+        )
         
