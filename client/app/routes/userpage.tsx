@@ -3,6 +3,7 @@ import type { Route } from "./+types/userpage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { User } from "@/lib/userSlice";
 import type { LikeData, PostData, SuperData } from "@/lib/types";
+import Post from "@/components/ui/post";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const user = await apiFetch(`/users/${params.username}`, {
@@ -36,6 +37,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
       await posts.json(),
       await supers.json(),
     ];
+    console.log(postData.data);
     return {
       userData: userData.data,
       likeData: likeData.data,
@@ -47,67 +49,73 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
 export default function UserPage({ loaderData }: Route.ComponentProps) {
   // Add null checks with optional chaining and default empty arrays
-  const userData = loaderData?.userData || {} as User;
-  const postData = loaderData?.postData || [] as PostData[];
-  const superData = loaderData?.superData || [] as SuperData[];
-  const likeData = loaderData?.likeData || [] as PostData[];
+  const userData = loaderData?.userData || ({} as User);
+  const postData = loaderData?.postData || ([] as PostData[]);
+  const superData = loaderData?.superData || ([] as SuperData[]);
+  const likeData = loaderData?.likeData || ([] as PostData[]);
 
   return (
-    <div>
-      <h1>{userData.display_name || userData.username}</h1>
-      {userData.profile_picture && (
-        <img src={userData.profile_picture} alt="Profile" />
-      )}
-      <Tabs defaultValue="posts" className="w-[400px]">
-        <TabsList>
+    <div className="text-secondary-foreground flex flex-col items-center">
+      <h1 className="text-4xl">{userData.display_name || userData.username}</h1>
+      <div
+        className={`flex size-40 items-center justify-center overflow-hidden rounded-full mt-4 ${
+          userData?.profile_picture
+            ? ""
+            : "border-muted-foreground border-1 border-solid"
+        }`}
+      >
+        {userData?.profile_picture ? (
+          <img src={userData.profile_picture} className="object-cover" />
+        ) : (
+          <p className="text-secondary-foreground text-6xl font-light">
+            {(userData?.display_name || "   ").substring(0, 2).toUpperCase()}
+          </p>
+        )}
+      </div>
+      <Tabs
+        defaultValue="posts"
+        className="text-secondary-foreground flex w-[400px] flex-col items-center"
+      >
+        <TabsList className="bg-secondary my-6 flex w-80 justify-evenly **:w-full">
           <TabsTrigger value="posts">Posts</TabsTrigger>
           <TabsTrigger value="supers">Activities</TabsTrigger>
           <TabsTrigger value="likes">Likes</TabsTrigger>
         </TabsList>
-        <TabsContent value="posts">
-          <h2>Posts</h2>
+        <TabsContent value="posts" className=" mb-18 ">
+          <h2 className="text-2xl mb-4">Posts</h2>
           {postData.length > 0 ? (
-            <div className="posts-list">
+            <div className="posts-list flex flex-col gap-5">
               {postData.map((post: PostData) => (
-                <div key={post.id} className="post-card">
-                  <p>{post.username}</p>
-                  <h3>{post.title}</h3>
-                  <p>{post.text}</p>
-                </div>
+                <Post post={post} />
               ))}
             </div>
           ) : (
             <p>No posts yet.</p>
           )}
         </TabsContent>
-        <TabsContent value="supers">
-          <h2>Activities</h2>
+        <TabsContent value="supers" className=" mb-18 ">
+          <h2 className="text-2xl mb-4">Activities</h2>
           {superData.length > 0 ? (
-            <div className="posts-list">
+            <div className="posts-list flex flex-col gap-5">
               {superData.map((superItem: SuperData) => (
                 <div
                   key={superItem.id}
-                  className="post-card rounded-4xl border-2 border-green-400"
+                  className="post-card rounded-sm border-2 border-secondary p-5 bg-secondary text-secondary-foreground"
                 >
                   <h3>{superItem.name}</h3>
-                  <p>{superItem.description}</p>
                 </div>
               ))}
             </div>
           ) : (
-            <p>No supers yet.</p>
+            <p>No activities yet.</p>
           )}
         </TabsContent>
-        <TabsContent value="likes">
-          <h2>Likes</h2>
+        <TabsContent value="likes" className=" mb-18 ">
+          <h2 className="text-2xl mb-4">Likes</h2>
           {likeData.length > 0 ? (
-            <div className="posts-list">
+            <div className="posts-list flex flex-col gap-5">
               {likeData.map((post: PostData) => (
-                <div key={post.id} className="post-card">
-                  <p>{post.username}</p>
-                  <h3>{post.title}</h3>
-                  <p>{post.text}</p>
-                </div>
+                <Post post={post}/>
               ))}
             </div>
           ) : (

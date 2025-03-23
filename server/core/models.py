@@ -123,12 +123,7 @@ class Event(Super):
         })
         return out
     
-class Comment(models.Model):
-    text = models.CharField(max_length=200, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    def to_dict(self):
-        return {'id': self.id, 'text': self.text, 'user': self.user.id}
-    
+
 class Post(models.Model):
     class PostType(models.TextChoices):
         TEXT = 'text', 'text'
@@ -148,17 +143,30 @@ class Post(models.Model):
     club = models.ForeignKey(Club, null=True, blank=True, on_delete=models.CASCADE, related_name="post_club")
     misc = models.ForeignKey(Super, null=True, blank=True, on_delete=models.CASCADE, related_name="post_misc")
     tag = models.ManyToManyField(Tag)
-    comments = models.ManyToManyField(Comment)
     
     def to_dict(self):
         return {
             'id': self.id,
             'title': self.title,
             'text': self.text,
+            'display_name': self.user.display_name,
             'username': self.user.username,
+            'profile_picture': self.user.profile_picture,
             'image_url': self.image_url,
             'contentType': self.contentType,
-            'comments': [comment.to_dict() for comment in self.comments.all()],
+            'project': {
+                'id': self.project.id if self.project is not None else None,
+                'name': self.project.name if self.project is not None else None
+            },
+            'event': {
+                'id': self.event.id if self.event is not None else None,
+                'name': self.event.name if self.event is not None else None
+            },
+            'club': {
+                'id': self.club.id if self.club is not None else None,
+                'name': self.club.name if self.club is not None else None
+            },
+            'like_number': Like.objects.filter(post=self).count(),
         }
     
 class Like(models.Model):
@@ -170,6 +178,20 @@ class Like(models.Model):
             'user': self.user.id,
             'post': self.post.id
         }
+
+class Comment(models.Model):
+    text = models.CharField(max_length=200, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None)
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'text': self.text,
+            'username': self.user.username,
+            'display_name': self.user.display_name,
+            "profile_picture": self.user.profile_picture,
+            'post': self.post.id}
+    
 
 class SuperUserData(models.Model):
     class SuperType(models.TextChoices):

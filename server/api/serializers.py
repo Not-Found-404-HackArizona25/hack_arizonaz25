@@ -33,8 +33,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             'password',
             'password_confirm',
             'display_name',
-            'facility_id',
-            'consent'
         ]
         # Override default optional fields to make them required
         extra_kwargs = {

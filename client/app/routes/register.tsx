@@ -15,17 +15,11 @@ export default function Login() {
     e.preventDefault();
 
     const formData = new FormData(e.target);
-    const username = (formData.get("first_name")?.toString().toLowerCase().slice(0,2)??"")
-                    +(formData.get("last_name")?.toString().toLowerCase().slice(0,2)??"")
-                    +(formData.get("birth_month")??"00")
-                    +(formData.get("birth_year")?.slice(2,5)??"XX");
     const data = {
-
-      username,
-      display_name: username,
+      username: formData.get("username"),
+      display_name: formData.get("display_name"),
       password: formData.get("password"),
       password_confirm: formData.get("password2"),
-
     };
 
     const password = formData.get("password") as string;
@@ -69,10 +63,10 @@ export default function Login() {
         throw new Error("Registration failed. Please try again.");
       }
 
-      login({...result.data.user});
+      login({ ...result.data.user });
 
       // Redirect to the dashboard on success
-      window.location.href = "/dashboard";
+      window.location.href = "/";
     } catch (err: any) {
       setError(err.message);
     }
@@ -85,76 +79,38 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="my-6 flex flex-col gap-5">
           <div className="flex gap-2">
             <div>
-              <label htmlFor="first_name">First Name <span className="text-error">*</span></label>
+              <label htmlFor="first_name">
+                Display Name <span className="text-error">*</span>
+              </label>
               <Input
                 minLength={2}
                 type="text"
-                name="first_name"
-                id="first_name"
+                name="display_name"
+                id="display_name"
                 placeholder="ex: Jane"
                 className="input"
                 required
               />
             </div>
             <div>
-              <label htmlFor="last_name">Last Name <span className="text-error">*</span></label>
+              <label htmlFor="last_name">
+                Username <span className="text-error">*</span>
+              </label>
               <Input
                 minLength={2}
                 type="text"
-                name="last_name"
-                id="last_name"
+                name="username"
+                id="username"
                 placeholder="ex: Smith"
                 className="input"
                 required
               />
             </div>
           </div>
-          <div className="flex gap-2">
-            <div className="flex flex-1 flex-col">
-              <label htmlFor="birth-month">Birth Month <span className="text-error">*</span></label>
-              <select
-                required
-                id="birth-month"
-                name="birth_month"
-                className="bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full rounded-xl border px-3 py-2 text-base"
-              >
-                <option value="" disabled selected>Select Birth Month</option>
-                <option value={"01"}>01 - January</option>
-                <option value={"02"}>02 - February</option>
-                <option value={"03"}>03 - March</option>
-                <option value={"04"}>04 - April</option>
-                <option value={"05"}>05 - May</option>
-                <option value={"06"}>06 - June</option>
-                <option value={"07"}>07 - July</option>
-                <option value={"08"}>08 - August</option>
-                <option value={"09"}>09 - September</option>
-                <option value={"10"}>10 - October</option>
-                <option value={"11"}>11 - November</option>
-                <option value={"12"}>12 - December</option>
-              </select>
-            </div>
-            <div className="flex flex-1 flex-col">
-              <label htmlFor="birth-year">Birth Year <span className="text-error">*</span></label>
-              <select
-                required
-                id="birth-year"
-                name="birth_year"
-                className="bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full rounded-xl border px-3 py-2 text-base"
-              >
-                <option value="" disabled selected>Select Birth Year</option>
-                {Array.from(
-                  { length: 100 },
-                  (_, i) => new Date().getFullYear() - i,
-                ).map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
           <div>
-            <label htmlFor="password">Password <span className="text-error">*</span></label>
+            <label htmlFor="password">
+              Password <span className="text-error">*</span>
+            </label>
             <PasswordInput
               name="password"
               id="password"
@@ -164,7 +120,9 @@ export default function Login() {
             />
           </div>
           <div>
-            <label htmlFor="password">Confirm Password <span className="text-error">*</span></label>
+            <label htmlFor="password">
+              Confirm Password <span className="text-error">*</span>
+            </label>
             <PasswordInput
               name="password2"
               id="password2"
@@ -175,41 +133,6 @@ export default function Login() {
             />
           </div>
           <div>
-            <label htmlFor="institution">Institution ID</label>
-            <Input
-              type="text"
-              name="institution"
-              id="institution"
-              placeholder="Institution ID"
-              className="input min-w-[25vw]"
-            />
-          </div>
-          {instructor && (
-            <div>
-              <label htmlFor="email">e-Mail</label>
-              <Input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="jane.smith@example.com"
-                className="input min-w-[25vw]"
-                required
-              />
-            </div>
-          )}
-          <div className="flex gap-2">
-            {!instructor && (
-              <Button
-                aria-label="Switch to instructor onboarding"
-                variant={"outline"}
-                className="px-4"
-                onClick={() => {
-                  setInstructor(true);
-                }}
-              >
-                I am an instructor
-              </Button>
-            )}
             <Button
               aria-label="Create Account"
               type="submit"

@@ -4,7 +4,7 @@ from django.db import transaction
 from django.contrib.auth import login, logout
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from .models import Super, User, Project, Link, Tag, Event, Club, Post
+from .models import Super, User, Project, Link, Tag, Event, Club, Post, Like
 from datetime import datetime
 from django.utils import timezone
 from django.db.models import Q
@@ -110,6 +110,9 @@ class PostService:
             limit: int = int(request.query_params.get('limit', 10))
 
             querySet = Post.objects.all()
+            
+            if request.query_params.get("order", "") == "reverse":
+                querySet = querySet.order_by('-id')
 
             if search:
                 querySet = querySet.filter(Q(title__icontains=search) | Q(text__icontains=search))
@@ -132,8 +135,18 @@ class PostService:
             
             # if no posts fit the filter, return None
             results = None if querySet is None else querySet[offset: offset+limit]
+            
+            posts = []
+            for post in results:
+                post_dict = post.to_dict()
+                # Check if the request has a user and if that user is authenticated
+                if request.user.is_authenticated:
+                    # Add the "liked" field based on whether a Like exists for this post and user
+                    post_dict["liked"] = Like.objects.filter(post=post, user=request.user).exists()
+                posts.append(post_dict)
+            
             return {
-                'posts': [post.to_dict() for post in results] if results else [],
+                'posts': posts,
                 'pagination': {
                     'total': querySet.count() if querySet is not None else 0,
                     'offset': offset,

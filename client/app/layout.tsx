@@ -4,6 +4,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { useClient } from "@/lib/useClient";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store";
+import Header from "./components/header";
+import { apiFetch } from "./lib/utils";
+import Footer from "./components/footer";
 
 export default function Layout() {
   const { windowDimensions } = useClient();
@@ -12,11 +15,13 @@ export default function Layout() {
   return (
     <>
       <div
-        className={`bg-background relative flex min-h-[100vh] flex-col content-evenly text-base`}
+        className={`bg-background flex min-h-[100vh] flex-col content-evenly text-base`}
       >
-        <div className="flex flex-grow">
+        <Header/>
+        <div className="flex flex-grow flex-col pt-20">
           <Outlet />
         </div>
+        <Footer/>
         <Toaster richColors closeButton={windowDimensions.width > 1024} />
       </div>
     </>

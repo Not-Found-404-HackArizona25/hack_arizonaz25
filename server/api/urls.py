@@ -9,7 +9,8 @@ urlpatterns = [
     path('users/<int:user_id>', UserIDView.as_view(), name='user-detail'),
     path('super',SuperView.as_view(), name='make edit super'),
     path('super/<int:super_id>', SuperIDView.as_view(),name='super-detail'),
-    
+    path('likes',LikeView.as_view(),name='likes'),
+    path('comments',CommentView.as_view(),name='comments'),
     path('users/<str:username>', UserUNameGet.as_view(), name='user-register'),
     path('likes/user/<str:username>', LikesUNameGet.as_view(), name='user-register'),
     path('posts/user/<str:username>', PostsUNameGet.as_view(), name='user-register'),

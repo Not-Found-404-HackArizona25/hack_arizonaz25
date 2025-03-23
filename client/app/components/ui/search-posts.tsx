@@ -39,7 +39,7 @@ export default function SearchPosts({ setPosts }: SearchProps) {
   }
   
   return (
-    <div>
+    <div className="text-secondary-foreground">
       <form onSubmit={handleSubmit}>
         <input placeholder="What do you want to find?" name="search" className="border-1 border-black" />
         <select title="Post Type: " name="type" defaultValue="misc">

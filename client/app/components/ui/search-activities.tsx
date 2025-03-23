@@ -40,13 +40,13 @@ export default function SearchActivities({ setActivities }: SearchProps) {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input placeholder="What activities you want to find?" name="search" className="border-1 border-black" />
+        <input placeholder="What activities you want to find?" name="search" className="border-1 border-secondary-foreground **:text-secondary-foreground" />
         <select title="Activity Type: " name="type" defaultValue="project">
             <option value="project">Project</option>
             <option value="club">Club</option>
             <option value="event">Event</option>
         </select>
-        <button type="submit">Search</button>
+        <button type="submit" className="border-1 border-secondary-foreground rounded-2xl px-3">Search</button>
       </form>
     </div>
   )
