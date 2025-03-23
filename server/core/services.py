@@ -154,31 +154,31 @@ class PostService:
             contentType = data.get('contentType', 'TEXT')
             text = image_url = None
             if contentType == 'TEXT':
-                text = data.get('text'),
+                text = data.get('text')
             if contentType == 'IMAGE':
                 image_url = data.get('image_url')
             try:
-                project = Project.objects.get(id=data.get('project', None))
+                project = Project.objects.get(id=data.get('project')) if data.get('project') else None
             except Project.DoesNotExist:
                 project = None  # Set to None if the project doesn't exist
             except Project.MultipleObjectsReturned:
                 raise ValidationError({"error": "Multiple projects found with the given ID"})
             try:
-                event = Event.objects.get(id=data.get('event', None))
+                event = Event.objects.get(id=data.get('event')) if data.get('event') else None
             except Event.DoesNotExist:
                 event = None  # Set to None if the event doesn't exist
             except Event.MultipleObjectsReturned:
                 raise ValidationError({"error": "Multiple events found with the given ID"})  # Handle duplicates properly
             
             try:
-                club = Club.objects.get(id=data.get('club', None))
+                club = Club.objects.get(id=data.get('club')) if data.get('club') else None
             except Club.DoesNotExist:
                 club = None  # Set to None if the club doesn't exist
             except Club.MultipleObjectsReturned:
                 raise ValidationError({"error": "Multiple clubs found with the given ID"})  # Handle duplicates properly
             
             try:
-                misc = Super.objects.get(id=data.get('misc', None))
+                misc = Super.objects.get(id=data.get('misc')) if data.get('misc') else None
             except Super.DoesNotExist:
                 misc = None  # Set to None if the misc doesn't exist
             except Super.MultipleObjectsReturned:
