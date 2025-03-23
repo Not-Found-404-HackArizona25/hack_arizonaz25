@@ -469,7 +469,7 @@ class PostsUNameGet(APIView):
 class SupersUNameGet(APIView):
     def get(self, request, **kwargs):
         [username] = kwargs.values()
-        projects = Project.objects.filter(leader__username=username)
+        projects = Super.objects.filter(leader__username=username)
         
         return json_standard(
             message='Successfully created Super',

@@ -100,10 +100,9 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
               {superData.map((superItem: SuperData) => (
                 <div
                   key={superItem.id}
-                  className="post-card rounded-4xl border-2 border-green-400"
+                  className="post-card rounded-sm border-2 border-secondary p-5 bg-secondary text-secondary-foreground"
                 >
                   <h3>{superItem.name}</h3>
-                  <p>{superItem.description}</p>
                 </div>
               ))}
             </div>
