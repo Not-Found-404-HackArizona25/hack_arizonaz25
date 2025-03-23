@@ -110,6 +110,9 @@ class PostService:
             limit: int = int(request.query_params.get('limit', 10))
 
             querySet = Post.objects.all()
+            
+            if request.query_params.get("order", "") == "reverse":
+                querySet = querySet.order_by('-id')
 
             if search:
                 querySet = querySet.filter(Q(title__icontains=search) | Q(text__icontains=search))

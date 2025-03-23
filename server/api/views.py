@@ -410,6 +410,15 @@ class CommentView(APIView):
             message="Successfully liked post",
             status=status.HTTP_200_OK
         )
+    def get(self, request):
+        id = request.query_params.get("id", "")
+        post = Post.objects.get(id=id)
+        comments = Comment.objects.filter(post=post)
+        return json_standard(
+            message="Successfully liked post",
+            data=[comment.to_dict() for comment in comments],
+            status=status.HTTP_200_OK
+        )
 
 class LikesUNameGet(APIView):
     def get(self, request, **kwargs):

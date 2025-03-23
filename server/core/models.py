@@ -184,7 +184,13 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None)
     def to_dict(self):
-        return {'id': self.id, 'text': self.text, 'user': self.user.id,'post': self.post.id}
+        return {
+            'id': self.id,
+            'text': self.text,
+            'username': self.user.username,
+            'display_name': self.user.display_name,
+            "profile_picture": self.user.profile_picture,
+            'post': self.post.id}
     
 
 class SuperUserData(models.Model):

@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 import { useState } from "react";
 import { apiFetch } from "@/lib/utils";
-import { Link, Navigate } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import {
   Dialog,
   DialogContent,
@@ -12,12 +12,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 export default function Post({ post }: { post: PostData }) {
   const [like, setLike] = useState(post.liked);
   const [likeCount, setLikeCount] = useState(post.like_number);
   const [comment, setComment] = useState("");
-  const [navigate, setNavigate] = useState(false);
+  const navigate = useNavigate();
   const toggleLike = async () => {
     const response = await apiFetch("/likes", {
       method: like ? "DELETE" : "POST",
@@ -42,12 +43,8 @@ export default function Post({ post }: { post: PostData }) {
       }),
     })
     if (response.ok){
-      setNavigate(true);
+      navigate(`/post/${post.id}`);
     }
-  }
-
-  if (navigate) {
-    return <Navigate to={`/posts/${post.id}`} replace />;
   }
 
   return (
@@ -116,9 +113,9 @@ export default function Post({ post }: { post: PostData }) {
                     onChange={(e) => setComment(e.target.value)}
                   ></textarea>
                   <div className="flex">
-                    <button className="text-md bg-primary text-primary-foreground ml-auto rounded-4xl p-2 px-4" onClick={postComment}>
+                    <DialogClose className="text-md bg-primary text-primary-foreground ml-auto rounded-4xl p-2 px-4" onClick={postComment}>
                       Post
-                    </button>
+                    </DialogClose>
                   </div>
                 </DialogDescription>
               </DialogHeader>

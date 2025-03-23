@@ -37,6 +37,9 @@ export interface EventData extends SuperData {
 export interface CommentData {
   id: number;
   text: string | null;
+  username: string;
+  display_name: string;
+  profile_picture: string;
   user: number;
 }
 
