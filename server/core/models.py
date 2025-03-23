@@ -69,6 +69,7 @@ class Tag(models.Model):
     tag = models.CharField(max_length=1000,null=True,blank=True)
     
 class Super(models.Model):
+    type = models.CharField(editable=False,default='misc')
     name = models.CharField(max_length=200, null=True, blank=True)
     leader = models.ForeignKey(User, on_delete=models.CASCADE,related_name="super_leader", blank=True, null=True)
     followers = models.ManyToManyField(User,related_name="super_users", blank=True, null=True)
@@ -77,12 +78,15 @@ class Super(models.Model):
     tags = models.ManyToManyField(Tag)
 
 class Project(Super):
+    type = models.CharField(editable=False,default='project')
     active = models.BooleanField(default=True)
 
 class Club(Super):
+    type = models.CharField(editable=False,default='club')
     pass
 
 class Event(Super):
+    type = models.CharField(editable=False,default='event')
     start_time = models.DateField(default=timezone.now)
     end_time = models.DateField(default=timezone.now)
     location = models.CharField(max_length=200, null=True, blank=True)
