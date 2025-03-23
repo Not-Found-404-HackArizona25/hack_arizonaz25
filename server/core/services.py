@@ -4,7 +4,7 @@ from django.db import transaction
 from django.contrib.auth import login, logout
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from .models import User, Project, Link, Tag, Event, Club, Post
+from .models import Super, User, Project, Link, Tag, Event, Club, Post
 from datetime import datetime
 from django.utils import timezone
 
@@ -143,6 +143,64 @@ class PostService:
         except KeyError as e:
             raise ValidationError(f'Missing required field: {str(e)}') from e
         
+    def create_a_post(user: User, data: dict):
+        # Create a Post instance using the provided data.
+        # We assume `data` contains "text" or "image_url".
+        # Todo: handle the tags later
+        try:
+            title = data.get('title', '')
+            contentType = data.get('contentType', 'TEXT')
+            text = image_url = None
+            if contentType == 'TEXT':
+                text = data.get('text'),
+            if contentType == 'IMAGE':
+                image_url = data.get('image_url')
+            try:
+                project = Project.objects.get(id=data.get('project', None))
+            except Project.DoesNotExist:
+                project = None  # Set to None if the project doesn't exist
+            except Project.MultipleObjectsReturned:
+                return {"error": "Multiple projects found with the given ID"}  # Handle duplicates properly
+            try:
+                event = Event.objects.get(id=data.get('event', None))
+            except Event.DoesNotExist:
+                event = None  # Set to None if the event doesn't exist
+            except Event.MultipleObjectsReturned:
+                return {"error": "Multiple events found with the given ID"}  # Handle duplicates properly
+            
+            try:
+                club = Club.objects.get(id=data.get('club', None))
+            except Club.DoesNotExist:
+                club = None  # Set to None if the club doesn't exist
+            except Club.MultipleObjectsReturned:
+                return {"error": "Multiple clubs found with the given ID"}  # Handle duplicates properly
+            
+            try:
+                misc = Super.objects.get(id=data.get('misc', None))
+            except Super.DoesNotExist:
+                misc = None  # Set to None if the misc doesn't exist
+            except Super.MultipleObjectsReturned:
+                return {"error": "Multiple miscs found with the given ID"}  # Handle duplicates properly
+            
+            
+
+            post = Post(
+                title = title,
+                user=user,
+                text=text,
+                image_url=image_url,
+                contentType=Post.PostType.TEXT if text else Post.PostType.IMAGE, 
+                project=None if not project else project,
+                event=event,
+                club=club,
+                misc=misc,
+            )
+            post.save()
+            return post
+        
+        except ValidationError as e:
+                raise ValidationError({'post': e.messages})
+         
 class SuperService:
     def create_project(user: User, data: dict):
         # Create a Project instance using the provided data.
