@@ -142,7 +142,9 @@ class PostService:
             
         except KeyError as e:
             raise ValidationError(f'Missing required field: {str(e)}') from e
-        
+    
+    @staticmethod
+    @transaction.atomic
     def create_a_post(user: User, data: dict):
         # Create a Post instance using the provided data.
         # We assume `data` contains "text" or "image_url".
@@ -160,27 +162,27 @@ class PostService:
             except Project.DoesNotExist:
                 project = None  # Set to None if the project doesn't exist
             except Project.MultipleObjectsReturned:
-                return {"error": "Multiple projects found with the given ID"}  # Handle duplicates properly
+                raise ValidationError({"error": "Multiple projects found with the given ID"})
             try:
                 event = Event.objects.get(id=data.get('event', None))
             except Event.DoesNotExist:
                 event = None  # Set to None if the event doesn't exist
             except Event.MultipleObjectsReturned:
-                return {"error": "Multiple events found with the given ID"}  # Handle duplicates properly
+                raise ValidationError({"error": "Multiple events found with the given ID"})  # Handle duplicates properly
             
             try:
                 club = Club.objects.get(id=data.get('club', None))
             except Club.DoesNotExist:
                 club = None  # Set to None if the club doesn't exist
             except Club.MultipleObjectsReturned:
-                return {"error": "Multiple clubs found with the given ID"}  # Handle duplicates properly
+                raise ValidationError({"error": "Multiple clubs found with the given ID"})  # Handle duplicates properly
             
             try:
                 misc = Super.objects.get(id=data.get('misc', None))
             except Super.DoesNotExist:
                 misc = None  # Set to None if the misc doesn't exist
             except Super.MultipleObjectsReturned:
-                return {"error": "Multiple miscs found with the given ID"}  # Handle duplicates properly
+                raise ValidationError({"error": "Multiple miscs found with the given ID"})  # Handle duplicates properly
             
             
 
