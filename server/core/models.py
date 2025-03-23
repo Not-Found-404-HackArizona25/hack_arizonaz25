@@ -64,9 +64,13 @@ class User(AbstractUser):
         
 class Link(models.Model):
     link = models.CharField(max_length=1000,null=True,blank=True)
+    def to_dict(self):
+        return self.link
     
 class Tag(models.Model):
     tag = models.CharField(max_length=1000,null=True,blank=True)
+    def to_dict(self):
+        return self.tag
     
 class Super(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
@@ -75,12 +79,32 @@ class Super(models.Model):
     description = models.CharField(max_length=1000,null=True,blank=True)
     links = models.ManyToManyField(Link)
     tags = models.ManyToManyField(Tag)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'leader': self.leader.id if self.leader else None,
+            'followers': [user.id for user in self.followers.all()],
+            'description': self.description,
+            'links': [link.to_dict() for link in self.links.all()],
+            'tags': [tag.to_dict() for tag in self.tags.all()],
+        }
 
 class Project(Super):
     active = models.BooleanField(default=True)
+    
+    def to_dict(self):
+        out = super().to_dict()
+        out['active'] = self.active
+        out['type'] = 'project'
+        return out
 
 class Club(Super):
-    pass
+    def to_dict(self):
+        out = super().to_dict()
+        out['type'] = 'club'
+        return out
 
 class Event(Super):
     start_time = models.DateField(default=timezone.now)
@@ -88,9 +112,22 @@ class Event(Super):
     location = models.CharField(max_length=200, null=True, blank=True)
     club_ref = models.ForeignKey(Club, blank=True, null=True, on_delete=models.CASCADE)
     
+    def to_dict(self):
+        out = super().to_dict()
+        out.update({
+            'start_time': self.start_time.isoformat(),
+            'end_time': self.end_time.isoformat(),
+            'location': self.location,
+            'club_ref': self.club_ref.id if self.club_ref else None,
+            'type': 'event'
+        })
+        return out
+    
 class Comment(models.Model):
     text = models.CharField(max_length=200, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    def to_dict(self):
+        return {'id': self.id, 'text': self.text, 'user': self.user.id}
     
 class Post(models.Model):
     class PostType(models.TextChoices):
@@ -105,8 +142,18 @@ class Post(models.Model):
         choices=PostType.choices,
         default=PostType.TEXT
     )
-    tag = models.ForeignKey(Super,on_delete=models.CASCADE)
+
     comments = models.ManyToManyField(Comment)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'text': self.text,
+            'image_url': self.image_url,
+            'contentType': self.contentType,
+            'comments': [comment.to_dict() for comment in self.comments.all()],
+        }
     
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
