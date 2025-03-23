@@ -134,6 +134,7 @@ class Post(models.Model):
         TEXT = 'text', 'text'
         IMAGE = 'image', 'image'
     
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
     title = models.CharField(max_length=200, null=True, blank=True)
     text = models.CharField(max_length=1000,null=True,blank=True)
     image_url = models.CharField(max_length=1000,null=True,blank=True)

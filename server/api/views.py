@@ -7,7 +7,7 @@ from rest_framework import status
 from .serializers import UserLoginSerializer, UserRegistrationSerializer, UserUpdateSerializer
 
 from core.services import UserService, SuperService, PostService
-from core.models import User, Super, Project, Event, Club
+from core.models import User, Super, Project, Event, Club, Like, Post
 from .utils import json_standard
 from django.db.models import Q
 
@@ -307,5 +307,46 @@ class SuperView(APIView):
         return json_standard(
             message='Successfully created Super',
             data=created.to_dict(),
+            status=status.HTTP_200_OK
+        )
+
+class UserUNameGet(APIView):
+    def get(self, request, **kwargs):
+        [username] = kwargs.values()
+        user = User.objects.filter(username=username).first()
+        return json_standard(
+            message='Successfully created Super',
+            data=user.to_dict() if user is not None else {},
+            status=status.HTTP_200_OK
+        )
+
+class LikesUNameGet(APIView):
+    def get(self, request, **kwargs):
+        [username] = kwargs.values()
+        likes = Like.objects.filter(user__username=username)
+        return json_standard(
+            message='Successfully created Super',
+            data=[user.to_dict() for user in likes],
+            status=status.HTTP_200_OK
+        )
+
+class PostsUNameGet(APIView):
+    def get(self, request, **kwargs):
+        [username] = kwargs.values()
+        posts = Post.objects.filter(user__username=username)
+        return json_standard(
+            message='Successfully created Super',
+            data=[user.to_dict() for user in posts],
+            status=status.HTTP_200_OK
+        )
+
+class SupersUNameGet(APIView):
+    def get(self, request, **kwargs):
+        [username] = kwargs.values()
+        projects = Project.objects.filter(leader__username=username)
+        
+        return json_standard(
+            message='Successfully created Super',
+            data=[user.to_dict() for user in projects],
             status=status.HTTP_200_OK
         )

@@ -11,7 +11,7 @@ export default [
     route("login", "routes/login.tsx"),
     route("register", "routes/register.tsx"),
     layout("protected.tsx", [
-      route('dashboard','routes/dashboard.tsx')
+      route(':username','routes/userpage.tsx')
     ]),
   ]),
 ] satisfies RouteConfig;
