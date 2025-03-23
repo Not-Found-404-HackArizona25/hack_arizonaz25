@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserLoginSerializer, UserRegistrationSerializer, UserUpdateSerializer
 from core.services import UserService
+from core.models import User
 from .utils import json_standard
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -124,3 +125,28 @@ class CurrentUserView(APIView):
             data=serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+    
+class UserIDView(APIView):
+    permission_classes = [IsAuthenticated]  # Restrict to authenticated users
+
+    def get(self, request, user_id, *args, **kwargs):
+        """
+        Retrieve a user by their ID.
+        """
+        try:
+            user = User.objects.get(id=user_id)
+            return json_standard(
+                message="Retrieved User",
+                data={'user': user.to_dict()},
+                status=status.HTTP_200_OK
+            )
+        except User.DoesNotExist:
+            return json_standard(
+                message="User not found",
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except ValueError:
+            return json_standard(
+                message="Invalid user ID",
+                status=status.HTTP_400_BAD_REQUEST
+            )
