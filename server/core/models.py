@@ -152,7 +152,6 @@ class Post(models.Model):
             'text': self.text,
             'image_url': self.image_url,
             'contentType': self.contentType,
-            'tag': self.type.id,
             'comments': [comment.to_dict() for comment in self.comments.all()],
         }
     
