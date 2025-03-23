@@ -127,14 +127,21 @@ class PostService:
                 querySet = querySet.filter(club__isnull=False)
 
             if type == "mics":
-                querySet = querySet.filter(mics__isnull=False)
+                querySet = querySet.filter(misc__isnull=False)
             
             # if no posts fit the filter, return all posts
-            results = None if querySet == None else querySet[offset: offset+limit]
-            return results
+            results = None if querySet is None else querySet[offset: offset+limit]
+            return {
+                'posts': [post.to_dict() for post in results] if results else [],
+                'pagination': {
+                    'total': querySet.count() if querySet is not None else 0,
+                    'offset': offset,
+                    'limit': limit
+                }
+            }
             
         except KeyError as e:
-            raise ValidationError(f'Missing required field: {str(e)}')
+            raise ValidationError(f'Missing required field: {str(e)}') from e
         
 class SuperService:
     def create_project(user: User, data: dict):
