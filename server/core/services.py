@@ -126,7 +126,7 @@ class PostService:
             if type == "club":
                 querySet = querySet.filter(club__isnull=False)
 
-            if type == "mics":
+            if type == "misc":
                 querySet = querySet.filter(misc__isnull=False)
             
             # if no posts fit the filter, return all posts
