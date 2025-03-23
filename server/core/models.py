@@ -71,7 +71,7 @@ class Tag(models.Model):
 class Super(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
     leader = models.ForeignKey(User, on_delete=models.CASCADE,related_name="super_leader", blank=True, null=True)
-    users = models.ManyToManyField(User,related_name="super_users", blank=True, null=True)
+    followers = models.ManyToManyField(User,related_name="super_users", blank=True, null=True)
     description = models.CharField(max_length=1000,null=True,blank=True)
     links = models.ManyToManyField(Link)
     tags = models.ManyToManyField(Tag)
@@ -88,6 +88,10 @@ class Event(Super):
     location = models.CharField(max_length=200, null=True, blank=True)
     club_ref = models.ForeignKey(Club, blank=True, null=True, on_delete=models.CASCADE)
     
+class Comment(models.Model):
+    text = models.CharField(max_length=200, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
 class Post(models.Model):
     class PostType(models.TextChoices):
         TEXT = 'text', 'text'
@@ -102,6 +106,7 @@ class Post(models.Model):
         default=PostType.TEXT
     )
     tag = models.ForeignKey(Super,on_delete=models.CASCADE)
+    comments = models.ManyToManyField(Comment)
     
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -117,4 +122,6 @@ class SuperUserData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     super = models.ForeignKey(Super, on_delete=models.CASCADE)
     type = models.CharField(max_length=7, choices=SuperType.choices, default=SuperType.SUPER)
+
+
     
