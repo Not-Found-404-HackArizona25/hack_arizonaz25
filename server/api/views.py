@@ -58,12 +58,11 @@ def get(self, request, *args, **kwargs):
         Q(username__icontains=search_term) |
         Q(display_name__icontains=search_term)
     ).distinct()
-            
         users = users[:10]
             
         return json_standard(
             message='Search Results',
-            data={'users': users.to_dict()},
+            data={'users': [user.to_dict() for user in users]},
             status=status.HTTP_200_OK,
         )
     
