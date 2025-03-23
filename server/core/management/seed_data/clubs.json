@@ -1,0 +1,32 @@
+[
+    {
+        "name": "AI Enthusiasts",
+        "description": "A club for those passionate about AI research.",
+        "links": ["https://ai-enthusiasts.com"],
+        "tags": ["AI", "technology"]
+    },
+    {
+        "name": "Sustainable Practices Club",
+        "description": "A club focused on environmental sustainability.",
+        "links": ["https://sustainable-practices.com"],
+        "tags": ["environment", "sustainability"]
+    },
+    {
+        "name": "Startup Founders Group",
+        "description": "A group for aspiring entrepreneurs.",
+        "links": ["https://startup-founders.com"],
+        "tags": ["entrepreneur", "startup"]
+    },
+    {
+        "name": "Medical Innovators",
+        "description": "A club focused on medical innovations.",
+        "links": ["https://medical-innovators.com"],
+        "tags": ["medical", "innovation"]
+    },
+    {
+        "name": "Tech Innovators",
+        "description": "A group for those creating cutting-edge technology.",
+        "links": ["https://tech-innovators.com"],
+        "tags": ["technology", "innovation"]
+    }
+]
