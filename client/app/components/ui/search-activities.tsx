@@ -1,12 +1,12 @@
 import { apiFetch } from "@/lib/utils"
 import { useState } from "react"
-import type { PostData } from "@/lib/types"
+import type { ProjectData, EventData, ClubData } from "@/lib/types"
 
 interface SearchProps {
-    setPosts: React.Dispatch<React.SetStateAction<Array<PostData>>>;
+    setActivities: React.Dispatch<React.SetStateAction<Array<ProjectData|EventData|ClubData>>>;
   }
 
-export default function SearchPosts({ setPosts }: SearchProps) {
+export default function SearchActivities({ setActivities }: SearchProps) {
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -15,20 +15,19 @@ export default function SearchPosts({ setPosts }: SearchProps) {
     const form = e.target as HTMLFormElement
     const formData = new FormData(form)
     const params = new URLSearchParams()
-    const search = formData.get('search') || ""
-    const type = formData.get('type') || ""
+    const search = formData.get('search') || ''
+    const type = formData.get('type') || ''
     if (search) params.append('search', search.toString())
     if (type) params.append('type', type.toString())
     
-
     try {
-      const response = await apiFetch(`/posts?${params.toString()}`, {
+      const response = await apiFetch(`/super?${params.toString()}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       })
       if (response.ok) {
         const json = await response.json()
-        setPosts(json.data.posts as Array<PostData>)
+        setActivities(json.data.activities as Array<ProjectData|EventData|ClubData>)
       } else {
         // Handle the error state if needed
         console.error('Error fetching data:', response.statusText)
@@ -41,12 +40,11 @@ export default function SearchPosts({ setPosts }: SearchProps) {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input placeholder="What do you want to find?" name="search" className="border-1 border-black" />
-        <select title="Post Type: " name="type" defaultValue="misc">
+        <input placeholder="What activities you want to find?" name="search" className="border-1 border-black" />
+        <select title="Activity Type: " name="type" defaultValue="project">
             <option value="project">Project</option>
             <option value="club">Club</option>
             <option value="event">Event</option>
-            <option value="misc">Others</option>
         </select>
         <button type="submit">Search</button>
       </form>
