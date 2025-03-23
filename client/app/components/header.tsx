@@ -19,16 +19,10 @@ export default function Header() {
   return (
     <>
       <div
-        className={`bg-primary/30 box-border flex items-center fixed -mb-20 -top-1 backdrop-blur-md **:text-white ${
-          user ? "pr-8 pl-12" : "px-12"
+        className={`bg-primary/30 fixed -top-1 -mb-20 box-border flex items-center backdrop-blur-md **:text-white ${
+          user ? "pr-6 pl-6" : "px-12"
         } border-b-primary-border h-18 w-full border-b-1`}
       >
-        <Link to="/" className="font-medi text-xl">
-          FORWARD
-        </Link>
-
-        {/* This is the mobile menu */}
-
         {/* This is the desktop menu */}
         {windowDimensions.width > 1024 ? (
           <ul className="ml-auto flex list-none items-center gap-6 font-medium *:hover:underline">
@@ -76,7 +70,7 @@ export default function Header() {
                   <DropdownMenu.DropdownMenuContent className="bg-secondary text-secondary-foreground w-full rounded-sm border-none p-0 *:p-0 **:active:backdrop-brightness-95">
                     <DropdownMenu.DropdownMenuItem>
                       <Link
-                        to="/account"
+                        to={"/" + user.username}
                         className="w-full p-3 text-left hover:underline hover:backdrop-brightness-90"
                       >
                         Account
@@ -109,25 +103,43 @@ export default function Header() {
           </ul>
         ) : (
           <Sheet.Sheet open={open} onOpenChange={setOpen}>
-            <Sheet.SheetTrigger className="ml-auto">
-              <Menu className="h-8 w-8" />
+            <Sheet.SheetTrigger>
+              <div
+                className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-full ${
+                  user?.profile_picture
+                    ? ""
+                    : "border-muted-foreground border-1 border-solid"
+                }`}
+              >
+                {user?.profile_picture ? (
+                  <img src={user.profile_picture} className="object-cover" />
+                ) : (
+                  <p className="text-secondary-foreground text-xl font-light">
+                    {(user?.display_name || "   ")
+                      .substring(0, 2)
+                      .toUpperCase()}
+                  </p>
+                )}
+              </div>
             </Sheet.SheetTrigger>
-            <Sheet.SheetContent side={"left"}
+            <Sheet.SheetContent
+              side={"left"}
               className={`bg-background flex flex-col px-4`}
               aria-describedby="A slide out from the right of the screen containing the navigation in a mobile-friendly way."
             >
               <Sheet.SheetTitle className="text-secondary-foreground">
-                FORWARD Navigation
+                WILDCAT HUB
               </Sheet.SheetTitle>
+              {
               <div className="*:bg-secondary text-secondary-foreground *:outline-secondary-border flex flex-col space-y-1 *:flex *:justify-between *:rounded-xl *:p-4 *:outline-1 *:active:bg-gray-200/80">
-                <Link to={"/dashboard"}>Dashboard</Link>
-                <Link to={"/lessons"}>Lessons</Link>
                 <Link to={"/activities"}>Activities</Link>
+                <Link to={"/chat"}>Chat</Link>
               </div>
+              }
               {user ? (
                 <div className="group mt-auto flex flex-col gap-4">
                   <Link
-                    to="/account"
+                    to={"/" + user.username}
                     className="flex w-full gap-3 active:backdrop-brightness-150"
                   >
                     <div

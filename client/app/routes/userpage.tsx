@@ -58,7 +58,7 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
     <div className="flex flex-col items-center">
       <h1 className="text-4xl">{userData.display_name || userData.username}</h1>
       {userData.profile_picture && (
-        <img src={userData.profile_picture} alt="Profile" />
+        <img src={userData.profile_picture} alt="Profile" className="size-40 rounded-full mb-5"/>
       )}
       <Tabs defaultValue="posts" className="w-[400px] text-secondary-foreground flex flex-col items-center">
         <TabsList className="w-80 flex justify-evenly **:w-full">
@@ -69,7 +69,7 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
         <TabsContent value="posts">
           <h2>Posts</h2>
           {postData.length > 0 ? (
-            <div className="posts-list">
+            <div className="posts-list flex flex-col gap-5">
               {postData.map((post: PostData) => (
                 <Post post={post}/>
               ))}

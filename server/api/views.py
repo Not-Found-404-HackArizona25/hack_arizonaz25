@@ -400,7 +400,11 @@ class CommentView(APIView):
         data = request.data
         user = request.user
         post = Post.objects.get(id=data.get('post'))
-        Comment.objects.create(post=post)
+        Comment.objects.create(post=post, text=data.get('text'),user=user)
+        return json_standard(
+            message="Successfully liked post",
+            status=status.HTTP_200_OK
+        )
 
 class LikesUNameGet(APIView):
     def get(self, request, **kwargs):

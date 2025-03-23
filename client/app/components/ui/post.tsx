@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 import { useState } from "react";
 import { apiFetch } from "@/lib/utils";
-import { Link } from "react-router";
+import { Link, Navigate } from "react-router";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,7 @@ export default function Post({ post }: { post: PostData }) {
   const [like, setLike] = useState(post.liked);
   const [likeCount, setLikeCount] = useState(post.like_number);
   const [comment, setComment] = useState("");
+  const [navigate, setNavigate] = useState(false);
   const toggleLike = async () => {
     const response = await apiFetch("/likes", {
       method: like ? "DELETE" : "POST",
@@ -30,6 +31,24 @@ export default function Post({ post }: { post: PostData }) {
       setLike(!like);
     }
   };
+
+  const postComment = async () =>{
+    const response = await apiFetch("/comments",{
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        post: post.id,
+        text: comment,
+      }),
+    })
+    if (response.ok){
+      setNavigate(true);
+    }
+  }
+
+  if (navigate) {
+    return <Navigate to={`/posts/${post.id}`} replace />;
+  }
 
   return (
     <div className="border-secondary-foreground flex items-start gap-3 rounded-3xl border p-4">
@@ -52,6 +71,7 @@ export default function Post({ post }: { post: PostData }) {
             {post.title && <p className="text-xl font-bold">{post.title}</p>}
           </div>
           <div>{post.text && <p className="w-[30ch]">{post.text}</p>}</div>
+          </Link>
           <div className="tags">
             <Badge
               variant={`outline`}
@@ -71,7 +91,7 @@ export default function Post({ post }: { post: PostData }) {
                 "Misc"}
             </Badge>
           </div>
-        </Link>
+        
         <div className="flex w-full items-center justify-evenly">
           <div className="flex gap-1">
             <button className="cursor-pointer" onClick={toggleLike}>
@@ -90,15 +110,15 @@ export default function Post({ post }: { post: PostData }) {
               <DialogHeader>
                 <DialogTitle>Post a reply</DialogTitle>
                 <DialogDescription className="rounded-5xl flex flex-col gap-2">
-                  <input
-                  className="w-full"
+                  <textarea
+                    className="bg-background-gray text-secondary-foreground border-secondary-foreground text-top h-20 w-full resize-none rounded-md border p-2 leading-normal"
                     value={comment}
-                    onChange={(e) => {
-                      setComment(e.target.value);
-                    }}
-                  ></input>
+                    onChange={(e) => setComment(e.target.value)}
+                  ></textarea>
                   <div className="flex">
-                  <button className="text-md ml-auto bg-primary rounded-4xl text-primary-foreground p-2 px-4">Post</button>
+                    <button className="text-md bg-primary text-primary-foreground ml-auto rounded-4xl p-2 px-4" onClick={postComment}>
+                      Post
+                    </button>
                   </div>
                 </DialogDescription>
               </DialogHeader>
