@@ -10,6 +10,8 @@ export default [
     index("routes/home.tsx"),
     route("login", "routes/login.tsx"),
     route("register", "routes/register.tsx"),
-    layout("protected.tsx", []),
+    layout("protected.tsx", [
+      route('dashboard','routes/dashboard.tsx')
+    ]),
   ]),
 ] satisfies RouteConfig;
