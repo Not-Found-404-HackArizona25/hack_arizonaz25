@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserLoginSerializer, UserRegistrationSerializer, UserUpdateSerializer
-from core.services import UserService
+from .serializers import UserLoginSerializer, UserRegistrationSerializer, UserUpdateSerializer, PostSerializer
+from core.services import UserService, PostService
 from .utils import json_standard
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -124,3 +124,31 @@ class CurrentUserView(APIView):
             data=serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+    
+class PostView(APIView):
+    """
+    API endpoint for retrieving multiple posts.
+    Supports optional filtering parameters via query strings.
+    Example: /api/posts/?type=project&tag=web&offset=10
+    """
+
+    permission_classes = [AllowAny] # Allows anyone to register (no authentication required)
+    
+    def get(self, request):
+        """
+        Handle the get multiple posts process. It:
+        1. Interact with the PostService to get queried posts
+        2. Returns all the posts to the user
+
+        Raises:
+            ValidationError: If the registration data is invalid
+        """
+        posts_data = PostService.get_multiple_posts(request)
+        print(f'yoy: {posts_data}')
+
+        return json_standard(
+            message="Get posts successful",
+            data=posts_data,
+            status=status.HTTP_200_OK
+        )
+    
