@@ -7,7 +7,7 @@ from rest_framework import status
 from .serializers import UserLoginSerializer, UserRegistrationSerializer, UserUpdateSerializer
 
 from core.services import UserService, SuperService, PostService
-from core.models import User, Super, Project, Event, Club
+from core.models import User, Super, Project, Event, Club, Like, Post
 from .utils import json_standard
 from django.db.models import Q
 
@@ -268,33 +268,37 @@ class SuperView(APIView):
         search_term = request.query_params.get('search', '')
         type = request.query_params.get('type', '')
         
+        clubs = Club.objects.filter(
+                Q(name__icontains=search_term) |
+                Q(description__icontains=search_term) |
+                Q(tags__tag__icontains=search_term)
+            ).distinct()
+
+        events = Event.objects.filter(
+                    Q(name__icontains=search_term) |
+                    Q(description__icontains=search_term) |
+                    Q(tags__tag__icontains=search_term)
+                ).distinct()
+
+        projects = Project.objects.filter(
+                Q(name__icontains=search_term) |
+                Q(description__icontains=search_term) |
+                Q(tags__tag__icontains=search_term)
+            ).distinct()
+        
         out = None
-        match type:
-            case 'project':
-                projects = Project.objects.filter(
-                    Q(name__icontains=search_term) |
-                    Q(description__icontains=search_term) |
-                    Q(tags__tag__icontains=search_term)
-                ).distinct()
-                out = projects[:10]
-            case 'event':
-                events = Event.objects.filter(
-                    Q(name__icontains=search_term) |
-                    Q(description__icontains=search_term) |
-                    Q(tags__tag__icontains=search_term)
-                ).distinct()
+        if type == 'project':
+            out = projects[:10]
+        elif type == 'event':
                 out = events[:10]
-            case 'club':
-                clubs = Club.objects.filter(
-                    Q(name__icontains=search_term) |
-                    Q(description__icontains=search_term) |
-                    Q(tags__tag__icontains=search_term)
-                ).distinct()
-                out = clubs[:10]
+        elif type == 'club':
+            out = clubs[:10]
+        else:
+            out = list(clubs[:10]) + list(projects[:10]) + list(events[:10])
                 
         return json_standard(
             message='Search Results',
-            data={(type+"s"): [super.to_dict() for super in out]},
+            data={("activities"): [super.to_dict() for super in out]},
             status=status.HTTP_200_OK,
         )
     
@@ -329,5 +333,46 @@ class SuperView(APIView):
         return json_standard(
             message='Successfully created Super',
             data=created.to_dict(),
+            status=status.HTTP_200_OK
+        )
+
+class UserUNameGet(APIView):
+    def get(self, request, **kwargs):
+        [username] = kwargs.values()
+        user = User.objects.filter(username=username).first()
+        return json_standard(
+            message='Successfully created Super',
+            data=user.to_dict() if user is not None else {},
+            status=status.HTTP_200_OK
+        )
+
+class LikesUNameGet(APIView):
+    def get(self, request, **kwargs):
+        [username] = kwargs.values()
+        likes = Like.objects.filter(user__username=username)
+        return json_standard(
+            message='Successfully created Super',
+            data=[user.to_dict() for user in likes],
+            status=status.HTTP_200_OK
+        )
+
+class PostsUNameGet(APIView):
+    def get(self, request, **kwargs):
+        [username] = kwargs.values()
+        posts = Post.objects.filter(user__username=username)
+        return json_standard(
+            message='Successfully created Super',
+            data=[user.to_dict() for user in posts],
+            status=status.HTTP_200_OK
+        )
+
+class SupersUNameGet(APIView):
+    def get(self, request, **kwargs):
+        [username] = kwargs.values()
+        projects = Project.objects.filter(leader__username=username)
+        
+        return json_standard(
+            message='Successfully created Super',
+            data=[user.to_dict() for user in projects],
             status=status.HTTP_200_OK
         )
