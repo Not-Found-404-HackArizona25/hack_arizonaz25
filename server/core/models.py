@@ -105,10 +105,10 @@ class Post(models.Model):
         choices=PostType.choices,
         default=PostType.TEXT
     )
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    club = models.ForeignKey(Club, on_delete=models.CASCADE)
-    misc = models.ForeignKey(Super, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.CASCADE, related_name="post_project")
+    event = models.ForeignKey(Event, null=True, blank=True, on_delete=models.CASCADE, related_name="post_event")
+    club = models.ForeignKey(Club, null=True, blank=True, on_delete=models.CASCADE, related_name="post_club")
+    misc = models.ForeignKey(Super, null=True, blank=True, on_delete=models.CASCADE, related_name="post_misc")
     tag = models.ManyToManyField(Tag)
     comments = models.ManyToManyField(Comment)
     
