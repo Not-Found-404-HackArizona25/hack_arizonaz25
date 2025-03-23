@@ -1,9 +1,10 @@
 # Business logic
+from typing import List
 from django.db import transaction
 from django.contrib.auth import login, logout
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from .models import User
+from .models import Post, User
 
 class UserService:
     @staticmethod
@@ -85,3 +86,50 @@ class UserService:
             logout(request)
         except Exception as e:
             raise ValidationError('logout failed. Please try again.')
+        
+class PostService:
+    @staticmethod
+    def get_multiple_posts(request):
+        """
+        Get multiple posts based on query parameters
+        
+        Args:
+            request: The HTTP request object
+            
+        Returns:
+            dict: Posts data
+        """
+        try:
+            title: str = request.query_params.get("title", "")
+            tag_list: List[str] = request.query_params.getlist("tag", [])
+            type: str = request.query_params.get("type", "")
+            offset: int = int(request.query_params.get('offset', 0))
+            limit: int = int(request.query_params.get('limit', 10))
+
+            querySet = Post.objects.all()
+
+            if title:
+                querySet = querySet.filter(title__icontains=title)
+            
+            if tag_list:
+                # Match all queries with at least one matching tag
+                querySet = querySet.filter(tag__tag__in=tag_list)
+
+            if type == "project":
+                querySet = querySet.filter(project__isnull=False)
+            
+            if type == "event":
+                querySet = querySet.filter(event__isnull=False)
+
+            if type == "club":
+                querySet = querySet.filter(club__isnull=False)
+
+            if type == "mics":
+                querySet = querySet.filter(mics__isnull=False)
+            
+            # if no posts fit the filter, return all posts
+            results = None if querySet == None else querySet[offset: offset+limit]
+            return results
+            
+        except KeyError as e:
+            raise ValidationError(f'Missing required field: {str(e)}')
