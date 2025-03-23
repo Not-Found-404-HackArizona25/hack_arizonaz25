@@ -33,7 +33,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const [posts, setPosts] = useState(postData)
   
   return (
-    <div>
+    <div className="flex flex-col items-center  pb-18 text-secondary-foreground">
       <SearchPosts setPosts={setPosts}/>
       <h2>Posts</h2>
       {posts.length > 0 ? (

@@ -340,13 +340,27 @@ class SuperView(APIView):
     def post(self, request):
         user = request.user
         data = request.data
-        created = None
         if data['type'] == 'project':
             created = SuperService.create_project(user,data)
+            return json_standard(
+            message='Successfully created Super',
+            data=created.to_dict(),
+            status=status.HTTP_200_OK
+        )
         elif data['type'] == 'event':
             created = SuperService.create_event(user,data)
+            return json_standard(
+            message='Successfully created Super',
+            data=created.to_dict(),
+            status=status.HTTP_200_OK
+        )
         elif data['type'] == 'club':
             created = SuperService.create_club(user,data)
+            return json_standard(
+            message='Successfully created Super',
+            data=created.to_dict(),
+            status=status.HTTP_200_OK
+        )
                 
         return json_standard(
             message='Successfully created Super',

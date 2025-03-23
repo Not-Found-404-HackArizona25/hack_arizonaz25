@@ -12,6 +12,7 @@ export default [
     route("register", "routes/register.tsx"),
     route('activities','routes/activities.tsx'),
     route('post/:postID','routes/post.tsx'),
+    route('activity/:activityid','routes/activity.tsx'),
     layout("protected.tsx", [
       route(':username','routes/userpage.tsx')
     ]),

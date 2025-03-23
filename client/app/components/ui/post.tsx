@@ -2,8 +2,9 @@ import type { PostData } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 import { useState } from "react";
-import { apiFetch } from "@/lib/utils";
+import { apiFetch, cn } from "@/lib/utils";
 import { Link, Navigate, useNavigate } from "react-router";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -13,8 +14,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
+import type { ClassNameValue } from "tailwind-merge";
 
-export default function Post({ post }: { post: PostData }) {
+export default function Post({ post, className }: { post: PostData, className?: ClassNameValue }) {
   const [like, setLike] = useState(post.liked);
   const [likeCount, setLikeCount] = useState(post.like_number);
   const [comment, setComment] = useState("");
@@ -48,7 +50,7 @@ export default function Post({ post }: { post: PostData }) {
   }
 
   return (
-    <div className="border-secondary-foreground flex items-start gap-3 rounded-3xl border p-4">
+    <div className={cn(className,"mx-5 border-secondary bg-secondary max-w-[50ch] flex items-start gap-3 rounded-3xl border p-4 text-secondary-foreground")}>
       <Link to={"/" + post.username}>
         <img src={"/Amber-1705-cropped.jpg"} className="size-10 rounded-full" />
       </Link>
@@ -67,19 +69,19 @@ export default function Post({ post }: { post: PostData }) {
           <div>
             {post.title && <p className="text-xl font-bold">{post.title}</p>}
           </div>
-          <div>{post.text && <p className="w-[30ch]">{post.text}</p>}</div>
+          <div>{post.text && <p className="w-full text-wrap max-w-[50ch] break-words break-all">{post.text}</p>}</div>
           </Link>
           <div className="tags">
             <Badge
               variant={`outline`}
               className={` ${
                 post.club?.name
-                  ? "bg-blue-100"
+                  ? "bg-blue-500"
                   : post.project?.name
-                    ? "bg-green-100"
+                    ? "bg-green-500"
                     : post.event?.name
-                      ? "bg-red-100"
-                      : "bg-yellow-100"
+                      ? "bg-red-500"
+                      : "bg-yellow-500"
               } text-secondary-foreground`}
             >
               {post.club?.name ||
@@ -94,7 +96,7 @@ export default function Post({ post }: { post: PostData }) {
             <button className="cursor-pointer" onClick={toggleLike}>
               <Heart
                 fill={like ? "red" : "none"}
-                stroke={like ? "red" : "black"}
+                stroke={like ? "red" : "var(--secondary-foreground)"}
               />
             </button>
             {likeCount}
@@ -103,9 +105,9 @@ export default function Post({ post }: { post: PostData }) {
             <DialogTrigger>
               <MessageCircle />
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="bg-secondary text-secondary-foreground">
               <DialogHeader>
-                <DialogTitle>Post a reply</DialogTitle>
+                <DialogTitle>Reply to this post</DialogTitle>
                 <DialogDescription className="rounded-5xl flex flex-col gap-2">
                   <textarea
                     className="bg-background-gray text-secondary-foreground border-secondary-foreground text-top h-20 w-full resize-none rounded-md border p-2 leading-normal"
@@ -121,7 +123,12 @@ export default function Post({ post }: { post: PostData }) {
               </DialogHeader>
             </DialogContent>
           </Dialog>
-          <Share2 />
+          <button onClick={()=>{
+            navigator.clipboard.writeText("https://hack.varphi.online/post/"+post.id);
+            toast.success("Copied post link to clipboard!")
+            }}>
+            <Share2 />
+          </button>
         </div>
       </div>
     </div>

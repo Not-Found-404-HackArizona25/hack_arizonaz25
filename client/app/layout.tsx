@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "./store";
 import Header from "./components/header";
 import { apiFetch } from "./lib/utils";
+import Footer from "./components/footer";
 
 export default function Layout() {
   const { windowDimensions } = useClient();
@@ -20,17 +21,7 @@ export default function Layout() {
         <div className="flex flex-grow flex-col pt-20">
           <Outlet />
         </div>
-        <button className="fixed right-7 bottom-7 bg-primary text-primary-foreground rounded-full size-12" onClick={async ()=>{
-          await apiFetch('/posts', {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title: "Whats the deal with agriculture",
-              text: "I dont know lol why are you asking me hahaha",
-              contentType: "TEXT"
-            })
-          })
-        }}>+</button>
+        <Footer/>
         <Toaster richColors closeButton={windowDimensions.width > 1024} />
       </div>
     </>

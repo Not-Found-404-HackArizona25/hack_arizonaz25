@@ -37,7 +37,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
       await posts.json(),
       await supers.json(),
     ];
-    console.log(postData.data)
+    console.log(postData.data);
     return {
       userData: userData.data,
       likeData: likeData.data,
@@ -49,19 +49,34 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
 export default function UserPage({ loaderData }: Route.ComponentProps) {
   // Add null checks with optional chaining and default empty arrays
-  const userData = loaderData?.userData || {} as User;
-  const postData = loaderData?.postData || [] as PostData[];
-  const superData = loaderData?.superData || [] as SuperData[];
-  const likeData = loaderData?.likeData || [] as PostData[];
+  const userData = loaderData?.userData || ({} as User);
+  const postData = loaderData?.postData || ([] as PostData[]);
+  const superData = loaderData?.superData || ([] as SuperData[]);
+  const likeData = loaderData?.likeData || ([] as PostData[]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="text-secondary-foreground flex flex-col items-center">
       <h1 className="text-4xl">{userData.display_name || userData.username}</h1>
-      {userData.profile_picture && (
-        <img src={userData.profile_picture} alt="Profile" className="size-40 rounded-full mb-5"/>
-      )}
-      <Tabs defaultValue="posts" className="w-[400px] text-secondary-foreground flex flex-col items-center">
-        <TabsList className="w-80 flex justify-evenly **:w-full">
+      <div
+        className={`flex size-40 items-center justify-center overflow-hidden rounded-full mt-4 ${
+          userData?.profile_picture
+            ? ""
+            : "border-muted-foreground border-1 border-solid"
+        }`}
+      >
+        {userData?.profile_picture ? (
+          <img src={userData.profile_picture} className="object-cover" />
+        ) : (
+          <p className="text-secondary-foreground text-6xl font-light">
+            {(userData?.display_name || "   ").substring(0, 2).toUpperCase()}
+          </p>
+        )}
+      </div>
+      <Tabs
+        defaultValue="posts"
+        className="text-secondary-foreground flex w-[400px] flex-col items-center"
+      >
+        <TabsList className="bg-secondary my-6 flex w-80 justify-evenly **:w-full">
           <TabsTrigger value="posts">Posts</TabsTrigger>
           <TabsTrigger value="supers">Activities</TabsTrigger>
           <TabsTrigger value="likes">Likes</TabsTrigger>
@@ -71,7 +86,7 @@ export default function UserPage({ loaderData }: Route.ComponentProps) {
           {postData.length > 0 ? (
             <div className="posts-list flex flex-col gap-5">
               {postData.map((post: PostData) => (
-                <Post post={post}/>
+                <Post post={post} />
               ))}
             </div>
           ) : (

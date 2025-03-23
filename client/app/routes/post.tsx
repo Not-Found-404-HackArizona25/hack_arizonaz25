@@ -27,10 +27,10 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
 
 export default function PostRoute({loaderData}: Route.ComponentProps){
-return <>
-    <Post post={(loaderData?.postData) as PostData}/>
+return <div className="flex flex-col items-center gap-5 pb-18">
+    <Post className="mb-7" post={(loaderData?.postData) as PostData}/>
     {loaderData?.commentData?loaderData?.commentData.map((comment: CommentData)=>{
         return <Comment comment={comment}/>
     }):<></>}
-</>
+</div>
 }

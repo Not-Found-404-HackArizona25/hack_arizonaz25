@@ -4,7 +4,7 @@ export default function Comment({ comment }: { comment: CommentData }) {
 
 
   return (
-    <div className="border-secondary-foreground flex items-start gap-3 rounded-3xl border p-4">
+    <div className="border-secondary-foreground bg-secondary text-secondary-foreground flex items-start gap-3 rounded-3xl border p-4">
       <Link to={"/" + comment.username}>
         <img src={"/Amber-1705-cropped.jpg"} className="size-10 rounded-full" />
       </Link>

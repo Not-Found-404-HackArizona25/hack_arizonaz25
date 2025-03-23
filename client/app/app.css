@@ -248,16 +248,16 @@ button {
 
 @layer base {
   :root {
-    --background: var(--color-gray-100);
-    --foreground: var(--color-white);
-    --foreground-border: var(--color-white);
+    --background: var(--color-gray-900);
+    --foreground: var(--color-gray-700);
+    --foreground-border: var(--color-gray-700);
 
-    --primary: var(--color-cyan-500);
-    --primary-foreground: var(--color-white);
+    --primary: var(--color-red-800);
+    --primary-foreground: var(--color-gray-300);
     --primary-border: var(--primary);
 
-    --secondary: var(--color-white);
-    --secondary-foreground: var(--color-black);
+    --secondary: var(--color-gray-800);
+    --secondary-foreground: var(--color-gray-300);
     --secondary-border: var(--color-white);
 
     --accent: var(--color-amber-500);
