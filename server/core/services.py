@@ -103,7 +103,7 @@ class PostService:
             dict: Posts data
         """
         try:
-            search: str = request.query_params.get("title", "")
+            search: str = request.query_params.get("search", "")
             tag_list: List[str] = request.query_params.getlist("tag", [])
             type: str = request.query_params.get("type", "")
             offset: int = int(request.query_params.get('offset', 0))
@@ -112,7 +112,8 @@ class PostService:
             querySet = Post.objects.all()
 
             if search:
-                querySet = querySet.filter(Q(title__icontains=search)|Q(text__icontains=search))
+                querySet = querySet.filter(Q(title__icontains=search) | Q(text__icontains=search))
+            
             if tag_list:
                 # Match all queries with at least one matching tag
                 querySet = querySet.filter(tag__tag__in=tag_list)
@@ -129,7 +130,7 @@ class PostService:
             if type == "misc":
                 querySet = querySet.filter(misc__isnull=False)
             
-            # if no posts fit the filter, return all posts
+            # if no posts fit the filter, return None
             results = None if querySet is None else querySet[offset: offset+limit]
             
             posts = []
