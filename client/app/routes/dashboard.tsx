@@ -9,7 +9,7 @@ export async function clientLoader({}: Route.ClientLoaderArgs) {
         name: 'HackPath',
         leader: 2,
         description: 'Path to hack!',
-        type: 'event'
+        type: 'club',
       })
     });
     if (response.ok){
