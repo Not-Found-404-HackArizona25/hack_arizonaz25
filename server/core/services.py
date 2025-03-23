@@ -183,9 +183,9 @@ class SuperService:
             # We assume `data` contains "name" and "description".
             try:
                 project = Project.objects.get(id=data.get("id"))
-                project = data.get('name',project.name)
-                project = data.get('description',project.description)
-                project = data.get('active',project.active)
+                project.name = data.get('name',project.name)
+                project.description = data.get('description',project.description)
+                project.active = data.get('active',project.active)
                 project.save()
                 return project
 
@@ -197,8 +197,8 @@ class SuperService:
         # We assume `data` contains "name" and "description".
         try:
             event = Event.objects.get(id=data.get("id"))
-            event = data.get('name',event.name)
-            event = data.get('description',event.description)
+            event.name = data.get('name',event.name)
+            event.description = data.get('description',event.description)
             event.save()
             return event
         
